@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Gameplay.Views
+namespace Game.Core
 {
     public class SafeArea : MonoBehaviour
     {

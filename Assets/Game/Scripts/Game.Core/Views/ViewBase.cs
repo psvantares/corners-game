@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Game.Data;
+using UnityEngine;
 
-namespace Game.Gameplay.Views
+namespace Game.Core
 {
     public class ViewBase : SafeArea
     {

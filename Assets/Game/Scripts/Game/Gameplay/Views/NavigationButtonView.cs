@@ -1,5 +1,6 @@
 using System;
 using Game.Core;
+using Game.Data;
 using Game.Gameplay.Theme;
 using TMPro;
 using UniRx;
@@ -8,15 +9,6 @@ using UnityEngine.UI;
 
 namespace Game.Gameplay.Views
 {
-    public enum NavigationType
-    {
-        None,
-        Play,
-        Market,
-        Profile,
-        Settings
-    }
-
     public class NavigationButtonView : MonoBehaviour
     {
         [Header("BUTTONS")]

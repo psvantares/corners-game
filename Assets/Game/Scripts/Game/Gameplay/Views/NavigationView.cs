@@ -1,4 +1,6 @@
 using System;
+using Game.Core;
+using Game.Data;
 using UniRx;
 using UnityEngine;
 

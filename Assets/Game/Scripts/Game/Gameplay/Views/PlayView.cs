@@ -1,6 +1,7 @@
 using System;
+using Game.Core;
+using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.Gameplay.Views
 {
@@ -8,48 +9,49 @@ namespace Game.Gameplay.Views
     {
         [Header("VIEWS")]
         [SerializeField]
-        private PlayDeckTypeView[] deckView;
+        private PlayDeckTypeView deckDiagonalView;
+
+        [SerializeField]
+        private PlayDeckTypeView deckSquareView;
 
         [Header("BUTTONS")]
         [SerializeField]
-        private Button startGameButton;
+        private SmartButton startGameButton;
 
-        public event Action<PlayDeckType> OnDeck;
-        public event Action OnStartGame;
+        private readonly CompositeDisposable disposable = new();
+        private readonly ISubject<PlayDeckType> deckEvent = new Subject<PlayDeckType>();
+        private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
+
+        public IObservable<PlayDeckType> DeckEvent => deckEvent;
+        public IObservable<Unit> StartGameEvent => startGameEvent;
 
         public void OnEnable()
         {
-            foreach (var view in deckView)
-            {
-                view.OnClick += HandleDeck;
-            }
+            disposable.Clear();
 
-            startGameButton.onClick.AddListener(HandleStartGame);
+            deckDiagonalView.ClickEvent.Subscribe(OnDeck).AddTo(disposable);
+            deckSquareView.ClickEvent.Subscribe(OnDeck).AddTo(disposable);
+            startGameButton.ClickedEvent.Subscribe(OnStartGame).AddTo(disposable);
         }
 
         private void OnDisable()
         {
-            foreach (var view in deckView)
-            {
-                view.OnClick -= HandleDeck;
-            }
-
-            startGameButton.onClick.RemoveAllListeners();
+            disposable.Clear();
         }
 
-        private void HandleDeck(PlayDeckType type)
-        {
-            foreach (var view in deckView)
-            {
-                view.SetActive(type == view.PlayDeckType);
-            }
+        // Events
 
-            OnDeck?.Invoke(type);
+        private void OnDeck(PlayDeckType playDeckType)
+        {
+            deckDiagonalView.SetDeckActive(playDeckType);
+            deckSquareView.SetDeckActive(playDeckType);
+
+            deckEvent?.OnNext(playDeckType);
         }
 
-        private void HandleStartGame()
+        private void OnStartGame(Unit unit)
         {
-            OnStartGame?.Invoke();
+            startGameEvent?.OnNext(unit);
         }
     }
 }

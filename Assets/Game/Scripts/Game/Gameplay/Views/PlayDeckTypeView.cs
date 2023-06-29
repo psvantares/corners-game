@@ -1,6 +1,8 @@
 using System;
+using Game.Core;
 using Game.Gameplay.Theme;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +14,11 @@ namespace Game.Gameplay.Views
         Diagonal
     }
 
-    public class PlayDeckTypeView : MonoBehaviour
+    public class PlayDeckTypeView : ViewBase
     {
         [Header("BUTTONS")]
         [SerializeField]
-        private Button playDeckButton;
+        private SmartButton playDeckButton;
 
         [Header("TEXTS")]
         [SerializeField]
@@ -37,22 +39,26 @@ namespace Game.Gameplay.Views
         [SerializeField]
         private PlayDeckType playDeckType;
 
-        public event Action<PlayDeckType> OnClick;
+        private readonly CompositeDisposable disposable = new();
+        private readonly ISubject<PlayDeckType> clickEvent = new Subject<PlayDeckType>();
 
-        public PlayDeckType PlayDeckType => playDeckType;
+        public IObservable<PlayDeckType> ClickEvent => clickEvent;
 
         private void OnEnable()
         {
-            playDeckButton.onClick.AddListener(HandleClick);
+            disposable.Clear();
+
+            playDeckButton.ClickedEvent.Subscribe(_ => OnClick(playDeckType)).AddTo(disposable);
         }
 
         private void OnDisable()
         {
-            playDeckButton.onClick.RemoveAllListeners();
+            disposable.Clear();
         }
 
-        public void SetActive(bool active)
+        public void SetDeckActive(PlayDeckType select)
         {
+            var active = playDeckType == select;
             var activeColor = ThemeManager.GetColor(ThemeColor.ColorB);
             var disableColor = ThemeManager.GetColor(ThemeColor.ColorG);
             var backgroundActiveColor = ThemeManager.GetColor(ThemeColor.ColorE);
@@ -71,9 +77,11 @@ namespace Game.Gameplay.Views
             markGo.SetActive(active);
         }
 
-        private void HandleClick()
+        // Events
+
+        private void OnClick(PlayDeckType playDeckType)
         {
-            OnClick?.Invoke(playDeckType);
+            clickEvent?.OnNext(playDeckType);
         }
     }
 }

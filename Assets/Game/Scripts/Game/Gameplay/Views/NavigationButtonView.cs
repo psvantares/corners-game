@@ -1,6 +1,8 @@
 using System;
+using Game.Core;
 using Game.Gameplay.Theme;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +21,7 @@ namespace Game.Gameplay.Views
     {
         [Header("BUTTONS")]
         [SerializeField]
-        private Button navigationButton;
+        private SmartButton navigationButton;
 
         [Header("TEXTS")]
         [SerializeField]
@@ -33,22 +35,26 @@ namespace Game.Gameplay.Views
         [SerializeField]
         private NavigationType navigationType;
 
-        public event Action<NavigationType> OnClick;
+        private readonly CompositeDisposable disposable = new();
+        private readonly ISubject<NavigationType> clickEvent = new Subject<NavigationType>();
 
-        public NavigationType NavigationType => navigationType;
+        public IObservable<NavigationType> ClickEvent => clickEvent;
 
         private void OnEnable()
         {
-            navigationButton.onClick.AddListener(HandleClick);
+            disposable.Clear();
+
+            navigationButton.ClickedEvent.Subscribe(OnClick).AddTo(disposable);
         }
 
         private void OnDisable()
         {
-            navigationButton.onClick.RemoveAllListeners();
+            disposable.Clear();
         }
 
-        public void SetActive(bool active)
+        public void SetActive(NavigationType select)
         {
+            var active = navigationType == select;
             var activeColor = ThemeManager.GetColor(ThemeColor.ColorB);
             var disableColor = ThemeManager.GetColor(ThemeColor.ColorD);
 
@@ -56,9 +62,11 @@ namespace Game.Gameplay.Views
             navigationIcon.color = active ? activeColor : disableColor;
         }
 
-        private void HandleClick()
+        // Events
+
+        private void OnClick(Unit unit)
         {
-            OnClick?.Invoke(navigationType);
+            clickEvent?.OnNext(navigationType);
         }
     }
 }

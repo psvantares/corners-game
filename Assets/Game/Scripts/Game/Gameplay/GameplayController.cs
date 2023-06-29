@@ -2,6 +2,7 @@ using System;
 using Game.Gameplay.Board;
 using Game.Gameplay.Theme;
 using Game.Gameplay.Views;
+using UniRx;
 
 namespace Game.Gameplay
 {
@@ -10,6 +11,8 @@ namespace Game.Gameplay
         private readonly ViewManager viewManager;
         private readonly BoardManager boardManager;
         private readonly ThemeManager themeManager;
+
+        private readonly CompositeDisposable disposable = new();
 
         public GameplayController(ViewManager viewManager, BoardManager boardManager, ThemeManager themeManager)
         {
@@ -22,15 +25,18 @@ namespace Game.Gameplay
 
         public void Dispose()
         {
-            viewManager.OnStartGame -= HandleStartGame;
+            disposable.Clear();
+            disposable.Dispose();
         }
 
         private void Initialize()
         {
-            viewManager.OnStartGame += HandleStartGame;
+            viewManager.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
         }
 
-        private void HandleStartGame()
+        // Events
+
+        private void OnStartGame(Unit unit)
         {
             boardManager.StartGame(BoardMode.Normal, true);
         }

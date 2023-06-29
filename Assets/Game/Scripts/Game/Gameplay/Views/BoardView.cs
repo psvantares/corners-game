@@ -1,7 +1,8 @@
 using System;
+using Game.Core;
 using TMPro;
+using UniRx;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.Gameplay.Views
 {
@@ -19,17 +20,19 @@ namespace Game.Gameplay.Views
 
         [Header("BUTTONS")]
         [SerializeField]
-        private Button playPauseButton;
+        private SmartButton playPauseButton;
 
         [Header("SETTINGS")]
         [SerializeField]
         private float timeRemaining = 10;
 
         private bool timerIsRunning;
-
         private GameStateType currentState = GameStateType.Play;
 
-        public event Action<GameStateType> OnPlayPause;
+        private readonly CompositeDisposable disposable = new();
+        private readonly ISubject<GameStateType> playPauseGameEvent = new Subject<GameStateType>();
+
+        public IObservable<GameStateType> PlayPauseGameEvent => playPauseGameEvent;
 
         private void Update()
         {
@@ -46,12 +49,14 @@ namespace Game.Gameplay.Views
 
         private void OnEnable()
         {
-            playPauseButton.onClick.AddListener(HandlePlayPause);
+            disposable.Clear();
+
+            playPauseButton.ClickedEvent.Subscribe(OnPlayPauseGame).AddTo(disposable);
         }
 
         private void OnDisable()
         {
-            playPauseButton.onClick.RemoveAllListeners();
+            disposable.Clear();
         }
 
         public void SetActiveTimer(bool active)
@@ -67,7 +72,8 @@ namespace Game.Gameplay.Views
             timerText.text = $"{minutes:00}:{seconds:00}";
         }
 
-        private void HandlePlayPause()
+        // Events
+        private void OnPlayPauseGame(Unit unit)
         {
             currentState = currentState switch
             {
@@ -76,7 +82,7 @@ namespace Game.Gameplay.Views
                 _ => currentState
             };
 
-            OnPlayPause?.Invoke(currentState);
+            playPauseGameEvent?.OnNext(currentState);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 using UnityEngine;
 
 namespace Game.Gameplay.Views
@@ -7,34 +8,47 @@ namespace Game.Gameplay.Views
     {
         [Header("VIEWS")]
         [SerializeField]
-        private NavigationButtonView[] buttonView;
+        private NavigationButtonView buttonPlayView;
 
-        public event Action<NavigationType> OnNavigationButton;
+        [SerializeField]
+        private NavigationButtonView buttonMarketView;
+
+        [SerializeField]
+        private NavigationButtonView buttonProfileView;
+
+        [SerializeField]
+        private NavigationButtonView buttonSettingsView;
+
+        private readonly CompositeDisposable disposable = new();
+        private readonly ISubject<NavigationType> navigationEvent = new Subject<NavigationType>();
+
+        public IObservable<NavigationType> NavigationEvent => navigationEvent;
 
         public void OnEnable()
         {
-            foreach (var view in buttonView)
-            {
-                view.OnClick += HandleClick;
-            }
+            disposable.Clear();
+
+            buttonPlayView.ClickEvent.Subscribe(OnNavigation).AddTo(disposable);
+            buttonMarketView.ClickEvent.Subscribe(OnNavigation).AddTo(disposable);
+            buttonProfileView.ClickEvent.Subscribe(OnNavigation).AddTo(disposable);
+            buttonSettingsView.ClickEvent.Subscribe(OnNavigation).AddTo(disposable);
         }
 
         private void OnDisable()
         {
-            foreach (var view in buttonView)
-            {
-                view.OnClick -= HandleClick;
-            }
+            disposable.Clear();
         }
 
-        private void HandleClick(NavigationType type)
-        {
-            foreach (var view in buttonView)
-            {
-                view.SetActive(type == view.NavigationType);
-            }
+        // Events
 
-            OnNavigationButton?.Invoke(type);
+        private void OnNavigation(NavigationType type)
+        {
+            buttonPlayView.SetActive(type);
+            buttonMarketView.SetActive(type);
+            buttonProfileView.SetActive(type);
+            buttonSettingsView.SetActive(type);
+
+            navigationEvent?.OnNext(type);
         }
     }
 }

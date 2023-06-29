@@ -1,4 +1,5 @@
 using System;
+using UniRx;
 using UnityEngine;
 
 namespace Game.Gameplay.Views
@@ -24,23 +25,30 @@ namespace Game.Gameplay.Views
         [SerializeField]
         private BoardView boardView;
 
-        public event Action OnStartGame;
-        public event Action<GameStateType> OnPlayPauseGame;
+        private readonly CompositeDisposable disposable = new();
+        private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
+        private readonly ISubject<GameStateType> playPauseGameEvent = new Subject<GameStateType>();
+
+        public IObservable<Unit> StartGameEvent => startGameEvent;
+        public IObservable<GameStateType> PlayPauseGameEvent => playPauseGameEvent;
 
         private void OnEnable()
         {
-            navigationView.OnNavigationButton += HandleNavigation;
-            playView.OnStartGame += HandleStartGame;
-            boardView.OnPlayPause += HandlePlayPause;
+            disposable.Clear();
+
+            navigationView.NavigationEvent.Subscribe(OnNavigation).AddTo(disposable);
+            playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
+            boardView.PlayPauseGameEvent.Subscribe(OnPlayPauseGame).AddTo(disposable);
         }
 
         private void OnDisable()
         {
-            navigationView.OnNavigationButton -= HandleNavigation;
-            playView.OnStartGame -= HandleStartGame;
+            disposable.Clear();
         }
 
-        private void HandleNavigation(NavigationType navigationType)
+        // Events
+
+        private void OnNavigation(NavigationType navigationType)
         {
             playView.SetActive(navigationType);
             marketView.SetActive(navigationType);
@@ -48,7 +56,7 @@ namespace Game.Gameplay.Views
             settingsView.SetActive(navigationType);
         }
 
-        private void HandleStartGame()
+        private void OnStartGame(Unit unit)
         {
             playView.SetActive(false);
             marketView.SetActive(false);
@@ -59,12 +67,12 @@ namespace Game.Gameplay.Views
             boardView.SetActive(true);
             boardView.SetActiveTimer(true);
 
-            OnStartGame?.Invoke();
+            startGameEvent?.OnNext(unit);
         }
 
-        private void HandlePlayPause(GameStateType type)
+        private void OnPlayPauseGame(GameStateType type)
         {
-            OnPlayPauseGame?.Invoke(type);
+            playPauseGameEvent?.OnNext(type);
         }
     }
 }

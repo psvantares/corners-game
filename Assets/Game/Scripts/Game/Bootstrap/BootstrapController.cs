@@ -41,10 +41,10 @@ namespace Game.Bootstrap
             await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
             loaderView.ChangeProgress(0.75f);
 
-            await LoadingComplete();
+            await LoadingCompleteAsync();
         }
 
-        private async UniTask LoadingComplete()
+        private async UniTask LoadingCompleteAsync()
         {
             loaderView.ChangeProgress(1f);
 
@@ -62,7 +62,7 @@ namespace Game.Bootstrap
 
                 if (nextScene.IsValid())
                 {
-                    await UnloadBootstrapScene();
+                    await UnloadBootstrapSceneAsync();
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace Game.Bootstrap
 
                     if (nextScene.isLoaded && nextScene.IsValid())
                     {
-                        await UnloadBootstrapScene();
+                        await UnloadBootstrapSceneAsync();
                     }
                 }
             }
@@ -79,6 +79,12 @@ namespace Game.Bootstrap
             {
                 loaderView.Clear();
             }
+        }
+
+        private async UniTask UnloadBootstrapSceneAsync()
+        {
+            await SceneManager.UnloadSceneAsync(SceneManager.GetSceneByBuildIndex(0), UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+            loaderView.Clear();
         }
 
         private static Scene GetSceneByIndex(int sceneIndex)
@@ -95,12 +101,6 @@ namespace Game.Bootstrap
             }
 
             return nextScene;
-        }
-
-        private async UniTask UnloadBootstrapScene()
-        {
-            await SceneManager.UnloadSceneAsync(SceneManager.GetSceneByBuildIndex(0), UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
-            loaderView.Clear();
         }
     }
 }

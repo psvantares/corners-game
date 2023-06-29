@@ -31,10 +31,10 @@ namespace Game.Gameplay.Views
 
         private readonly CompositeDisposable disposable = new();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
-        private readonly ISubject<GameStateType> playPauseGameEvent = new Subject<GameStateType>();
+        private readonly ISubject<Unit> homeEvent = new Subject<Unit>();
 
         public IObservable<Unit> StartGameEvent => startGameEvent;
-        public IObservable<GameStateType> PlayPauseGameEvent => playPauseGameEvent;
+        public IObservable<Unit> HomeEvent => homeEvent;
 
         private void OnEnable()
         {
@@ -43,7 +43,7 @@ namespace Game.Gameplay.Views
             navigationView.NavigationEvent.Subscribe(OnNavigation).AddTo(disposable);
             playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
             playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
-            boardView.PlayPauseGameEvent.Subscribe(OnPlayPauseGame).AddTo(disposable);
+            boardView.HomeEvent.Subscribe(OnHome).AddTo(disposable);
         }
 
         private void OnDisable()
@@ -85,9 +85,9 @@ namespace Game.Gameplay.Views
             gameModel.DeckType = deckType;
         }
 
-        private void OnPlayPauseGame(GameStateType type)
+        private void OnHome(Unit unit)
         {
-            playPauseGameEvent?.OnNext(type);
+            homeEvent?.OnNext(unit);
         }
     }
 }

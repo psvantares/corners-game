@@ -6,12 +6,6 @@ using UnityEngine;
 
 namespace Game.Gameplay.Views
 {
-    public enum GameStateType
-    {
-        Play,
-        Pause
-    }
-
     public class BoardView : ViewBase
     {
         [Header("TEXTS")]
@@ -20,19 +14,15 @@ namespace Game.Gameplay.Views
 
         [Header("BUTTONS")]
         [SerializeField]
-        private SmartButton playPauseButton;
+        private SmartButton homeButton;
 
-        [Header("SETTINGS")]
-        [SerializeField]
-        private float timeRemaining = 10;
-
+        private float timeRemaining;
         private bool timerIsRunning;
-        private GameStateType currentState = GameStateType.Play;
 
         private readonly CompositeDisposable disposable = new();
-        private readonly ISubject<GameStateType> playPauseGameEvent = new Subject<GameStateType>();
+        private readonly ISubject<Unit> homeEvent = new Subject<Unit>();
 
-        public IObservable<GameStateType> PlayPauseGameEvent => playPauseGameEvent;
+        public IObservable<Unit> HomeEvent => homeEvent;
 
         private void Update()
         {
@@ -41,17 +31,14 @@ namespace Game.Gameplay.Views
                 return;
             }
 
-            if (currentState == GameStateType.Play)
-            {
-                DisplayTime(timeRemaining += Time.deltaTime);
-            }
+            DisplayTime(timeRemaining += Time.deltaTime);
         }
 
         private void OnEnable()
         {
             disposable.Clear();
 
-            playPauseButton.ClickedEvent.Subscribe(OnPlayPauseGame).AddTo(disposable);
+            homeButton.ClickedEvent.Subscribe(OnHome).AddTo(disposable);
         }
 
         private void OnDisable()
@@ -73,16 +60,10 @@ namespace Game.Gameplay.Views
         }
 
         // Events
-        private void OnPlayPauseGame(Unit unit)
-        {
-            currentState = currentState switch
-            {
-                GameStateType.Play => GameStateType.Pause,
-                GameStateType.Pause => GameStateType.Play,
-                _ => currentState
-            };
 
-            playPauseGameEvent?.OnNext(currentState);
+        private void OnHome(Unit unit)
+        {
+            homeEvent?.OnNext(unit);
         }
     }
 }

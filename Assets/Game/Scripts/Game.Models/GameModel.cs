@@ -1,9 +1,11 @@
 ﻿using System;
+using Game.Data;
 
-namespace Game.Scripts.Game.Models
+namespace Game.Models
 {
     [Serializable]
-    public class GameModel
+    public class GameModel : IGameModel
     {
+        public BoardDeckType DeckType { get; set; }
     }
 }

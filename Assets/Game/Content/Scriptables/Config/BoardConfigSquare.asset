@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b9edb724f264458812d84af9637113c, type: 3}
-  m_Name: BoardConfig
+  m_Name: BoardConfigSquare
   m_EditorClassIdentifier: 
   whitePosition:
   - {x: 0, y: 0}
@@ -23,13 +23,13 @@ MonoBehaviour:
   - {x: 2, y: 1}
   - {x: 2, y: 2}
   blackPosition:
-  - {x: 5, y: 7}
-  - {x: 6, y: 7}
-  - {x: 7, y: 7}
-  - {x: 5, y: 6}
-  - {x: 6, y: 6}
-  - {x: 7, y: 6}
   - {x: 5, y: 5}
+  - {x: 5, y: 6}
+  - {x: 5, y: 7}
   - {x: 6, y: 5}
+  - {x: 6, y: 6}
+  - {x: 6, y: 7}
   - {x: 7, y: 5}
+  - {x: 7, y: 6}
+  - {x: 7, y: 7}
   boardSize: {x: 8, y: 8}

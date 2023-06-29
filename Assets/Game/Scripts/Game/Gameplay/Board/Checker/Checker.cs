@@ -1,3 +1,4 @@
+using Game.Data;
 using UnityEngine;
 
 namespace Game.Gameplay.Board

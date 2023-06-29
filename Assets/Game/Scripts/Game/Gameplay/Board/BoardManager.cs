@@ -1,3 +1,5 @@
+using Game.Data;
+using Game.Models;
 using UnityEngine;
 
 namespace Game.Gameplay.Board
@@ -16,8 +18,12 @@ namespace Game.Gameplay.Board
         private BoardResources boardResources;
 
         [SerializeField]
-        private BoardConfig boardConfig;
+        private BoardConfig boardConfigDiagonal;
 
+        [SerializeField]
+        private BoardConfig boardConfigSquare;
+
+        [Space]
         [SerializeField]
         private BoardInput boardInput;
 
@@ -27,21 +33,26 @@ namespace Game.Gameplay.Board
         [SerializeField]
         private BoardProvider boardTransform;
 
+        private IGameModel gameModel;
         private BoardController cornersController;
-
-        private void Start()
-        {
-            SetupCamera();
-        }
 
         private void Update()
         {
             boardInput.Update();
         }
 
+        public void Initialize(IGameModel gameModel)
+        {
+            this.gameModel = gameModel;
+        }
+
         public void StartGame(BoardMode boardMode, bool aiOpponent)
         {
-            cornersController = new BoardController(boardTransform, boardMode, aiOpponent, boardResources, boardConfig);
+            var config = gameModel.DeckType == BoardDeckType.Diagonal ? boardConfigDiagonal : boardConfigSquare;
+            cornersController = new BoardController(boardTransform, boardMode, aiOpponent, boardResources, config);
+
+            SetupCamera(config.BoardSize);
+
             boardObject.SetActive(true);
         }
 
@@ -50,9 +61,9 @@ namespace Game.Gameplay.Board
             cornersController.Pause(value);
         }
 
-        private void SetupCamera()
+        private void SetupCamera(Vector2Int boardSize)
         {
-            boardCamera.Setup(boardConfig.BoardSize);
+            boardCamera.Setup(boardSize);
 
             var cameraPosition = boardCamera.transform.position;
             backgroundTransform.localPosition = new Vector3(cameraPosition.x, cameraPosition.y, 0);

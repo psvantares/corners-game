@@ -4688,7 +4688,7 @@ MonoBehaviour:
   - {fileID: 3006707823179081813}
   - {fileID: 4263545114756764664}
   markGo: {fileID: 120847383188464212}
-  playDeckType: 0
+  deckType: 0
 --- !u!114 &5081155271371356743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5703,7 +5703,7 @@ MonoBehaviour:
   - {fileID: 4921527858532372158}
   - {fileID: 6252846006905601226}
   markGo: {fileID: 7790858619613780113}
-  playDeckType: 1
+  deckType: 1
 --- !u!114 &1045580540480439322
 MonoBehaviour:
   m_ObjectHideFlags: 0

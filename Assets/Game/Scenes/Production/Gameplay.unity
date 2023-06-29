@@ -663,7 +663,8 @@ MonoBehaviour:
   boardObject: {fileID: 853465537}
   backgroundTransform: {fileID: 1577218626409108486}
   boardResources: {fileID: 11400000, guid: 25ccb61f0b0b049428f06e5409fa4392, type: 2}
-  boardConfig: {fileID: 11400000, guid: bc2dc8fa6a0984eafb79beac1927ab77, type: 2}
+  boardConfigDiagonal: {fileID: 11400000, guid: 292f38b829d16604191a19c2521acca7, type: 2}
+  boardConfigSquare: {fileID: 11400000, guid: bc2dc8fa6a0984eafb79beac1927ab77, type: 2}
   boardInput: {fileID: 13382064}
   boardCamera: {fileID: 1718561959}
   boardTransform: {fileID: 1047025917}

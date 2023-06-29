@@ -1,4 +1,6 @@
 using System;
+using Game.Data;
+using Game.Models;
 using UniRx;
 using UnityEngine;
 
@@ -25,6 +27,8 @@ namespace Game.Gameplay.Views
         [SerializeField]
         private BoardView boardView;
 
+        private IGameModel gameModel;
+
         private readonly CompositeDisposable disposable = new();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
         private readonly ISubject<GameStateType> playPauseGameEvent = new Subject<GameStateType>();
@@ -38,12 +42,18 @@ namespace Game.Gameplay.Views
 
             navigationView.NavigationEvent.Subscribe(OnNavigation).AddTo(disposable);
             playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
+            playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
             boardView.PlayPauseGameEvent.Subscribe(OnPlayPauseGame).AddTo(disposable);
         }
 
         private void OnDisable()
         {
             disposable.Clear();
+        }
+
+        public void Initialize(IGameModel gameModel)
+        {
+            this.gameModel = gameModel;
         }
 
         // Events
@@ -68,6 +78,11 @@ namespace Game.Gameplay.Views
             boardView.SetActiveTimer(true);
 
             startGameEvent?.OnNext(unit);
+        }
+
+        private void OnDeck(BoardDeckType deckType)
+        {
+            gameModel.DeckType = deckType;
         }
 
         private void OnPlayPauseGame(GameStateType type)

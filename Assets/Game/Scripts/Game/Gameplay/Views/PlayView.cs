@@ -1,5 +1,6 @@
 using System;
 using Game.Core;
+using Game.Data;
 using UniRx;
 using UnityEngine;
 
@@ -19,11 +20,18 @@ namespace Game.Gameplay.Views
         private SmartButton startGameButton;
 
         private readonly CompositeDisposable disposable = new();
-        private readonly ISubject<PlayDeckType> deckEvent = new Subject<PlayDeckType>();
+        private readonly ISubject<BoardDeckType> deckEvent = new Subject<BoardDeckType>();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
 
-        public IObservable<PlayDeckType> DeckEvent => deckEvent;
+        public IObservable<BoardDeckType> DeckEvent => deckEvent;
         public IObservable<Unit> StartGameEvent => startGameEvent;
+
+        protected override void Start()
+        {
+            base.Start();
+
+            OnDeck(BoardDeckType.Square);
+        }
 
         public void OnEnable()
         {
@@ -41,12 +49,12 @@ namespace Game.Gameplay.Views
 
         // Events
 
-        private void OnDeck(PlayDeckType playDeckType)
+        private void OnDeck(BoardDeckType deckType)
         {
-            deckDiagonalView.SetDeckActive(playDeckType);
-            deckSquareView.SetDeckActive(playDeckType);
+            deckDiagonalView.SetDeckActive(deckType);
+            deckSquareView.SetDeckActive(deckType);
 
-            deckEvent?.OnNext(playDeckType);
+            deckEvent?.OnNext(deckType);
         }
 
         private void OnStartGame(Unit unit)

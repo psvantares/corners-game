@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Gameplay.Board;
 using Game.Gameplay.Theme;
 using Game.Gameplay.Views;
+using Game.Models;
 using UnityEngine;
 
 namespace Game.Gameplay
@@ -18,11 +19,15 @@ namespace Game.Gameplay
         [SerializeField]
         private ThemeManager themeManager;
 
+        private IGameModel gameModel;
+
         private readonly List<IDisposable> disposables = new();
 
         private void Awake()
         {
-            var gameplayController = new GameplayController(viewManager, boardManager, themeManager);
+            gameModel = new GameModel();
+
+            var gameplayController = new GameplayController(gameModel, viewManager, boardManager, themeManager);
 
             disposables.Add(gameplayController);
         }

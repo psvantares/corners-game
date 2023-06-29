@@ -39,7 +39,7 @@ namespace Game.Gameplay.Board
             }
 
             var position = hit.collider.transform.position;
-            return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.z));
+            return new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
         }
     }
 }

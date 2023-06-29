@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game.Utilities;
 using UnityEngine;
 
 namespace Game.Gameplay.Board
@@ -11,40 +12,41 @@ namespace Game.Gameplay.Board
         private readonly List<Checker> blackCheckers = new();
         private readonly List<Checker> whiteCheckers = new();
 
-        private readonly Transform boardTransform;
+        private readonly BoardProvider provider;
         private readonly BoardMode boardMode;
-        private readonly BoardResources boardResources;
-        private readonly BoardConfig boardConfig;
+        private readonly BoardResources resources;
+        private readonly BoardConfig config;
 
-        public Board(Transform boardTransform, BoardMode boardMode, BoardResources boardResources, BoardConfig boardConfig)
+        public Board(BoardProvider provider, BoardMode boardMode, BoardResources resources, BoardConfig config)
         {
-            this.boardTransform = boardTransform;
+            this.provider = provider;
             this.boardMode = boardMode;
-            this.boardResources = boardResources;
-            this.boardConfig = boardConfig;
+            this.resources = resources;
+            this.config = config;
 
             Initialize();
         }
 
         private void Initialize()
         {
-            for (var x = 0; x < boardConfig.BoardSize.x; x++)
+            for (var x = 0; x < config.BoardSize.x; x++)
             {
-                for (var y = 0; y < boardConfig.BoardSize.y; y++)
+                for (var y = 0; y < config.BoardSize.y; y++)
                 {
-                    var prefab = (x + y) % 2 == 1 ? boardResources.BoardCellWhite : boardResources.BoardCellBlack;
-                    var cell = Utils.Instantiate(prefab, new Vector2Int(x, y), boardTransform);
+                    var isWhite = (x + y) % 2 == 1;
+                    var prefab = isWhite ? resources.BoardCellWhite : resources.BoardCellBlack;
+                    var cell = Creator.Instantiate(prefab, new Vector2Int(x, y), provider.CellsTransform);
                     cell.SetPosition(x, y);
                     cells.Add(cell);
                 }
             }
 
-            foreach (var position in boardConfig.BlackPosition)
+            foreach (var position in config.BlackPosition)
             {
                 blackCheckers.Add(CreateChecker(PlayerType.Black, position));
             }
 
-            foreach (var position in boardConfig.WhitePosition)
+            foreach (var position in config.WhitePosition)
             {
                 whiteCheckers.Add(CreateChecker(PlayerType.White, position));
             }
@@ -55,8 +57,9 @@ namespace Game.Gameplay.Board
 
         private Checker CreateChecker(PlayerType type, Vector2Int position)
         {
-            var prefab = type == PlayerType.Black ? boardResources.CheckerBlack : boardResources.CheckerWhite;
-            var checker = Utils.Instantiate(prefab, position, boardTransform);
+            var isWhite = type == PlayerType.White;
+            var prefab = isWhite ? resources.CheckerWhite : resources.CheckerBlack;
+            var checker = Creator.Instantiate(prefab, position, isWhite ? provider.WhiteTransform : provider.BlackTransform);
             checker.SetPosition(position);
             return checker;
         }
@@ -70,8 +73,8 @@ namespace Game.Gameplay.Board
         {
             return playerType switch
             {
-                PlayerType.Black => blackCheckers.All(unit => boardConfig.WhitePosition.Contains(unit.Position)),
-                PlayerType.White => whiteCheckers.All(unit => boardConfig.BlackPosition.Contains(unit.Position)),
+                PlayerType.Black => blackCheckers.All(unit => config.WhitePosition.Contains(unit.Position)),
+                PlayerType.White => whiteCheckers.All(unit => config.BlackPosition.Contains(unit.Position)),
                 _ => false
             };
         }
@@ -94,7 +97,7 @@ namespace Game.Gameplay.Board
 
         private bool IsPositionOutOfBounds(Vector2Int position)
         {
-            return position.x < 0 || position.x >= boardConfig.BoardSize.x || position.y < 0 || position.y >= boardConfig.BoardSize.y;
+            return position.x < 0 || position.x >= config.BoardSize.x || position.y < 0 || position.y >= config.BoardSize.y;
         }
 
         public Checker GetRandomChecker(PlayerType playerType)
@@ -107,16 +110,16 @@ namespace Game.Gameplay.Board
         public BoardCell GetRandomStartCell(PlayerType playerType)
         {
             return GetCell(playerType == PlayerType.Black
-                ? boardConfig.BlackPosition[Random.Range(0, boardConfig.BlackPosition.Count)]
-                : boardConfig.WhitePosition[Random.Range(0, boardConfig.WhitePosition.Count)]);
+                ? config.BlackPosition[Random.Range(0, config.BlackPosition.Count)]
+                : config.WhitePosition[Random.Range(0, config.WhitePosition.Count)]);
         }
 
         public List<BoardCell> GetEmptyStartPositions(PlayerType playerType)
         {
             var result = new List<BoardCell>();
             result.AddRange(playerType == PlayerType.Black
-                ? boardConfig.BlackPosition.Select(GetCell).Where(cell => GetChecker(cell) == null)
-                : boardConfig.WhitePosition.Select(GetCell).Where(cell => GetChecker(cell) == null));
+                ? config.BlackPosition.Select(GetCell).Where(cell => GetChecker(cell) == null)
+                : config.WhitePosition.Select(GetCell).Where(cell => GetChecker(cell) == null));
 
             return result;
         }

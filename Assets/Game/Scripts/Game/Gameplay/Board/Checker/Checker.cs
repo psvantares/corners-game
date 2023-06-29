@@ -11,7 +11,7 @@ namespace Game.Gameplay.Board
         public static Checker Selected { get; private set; }
 
         private Vector3 normalScale, selectedScale;
-        private const float SELECTED_SCALE_FACTOR = 1.25f;
+        private const float SELECTED_SCALE_FACTOR = 1.14f;
 
         private void Start()
         {
@@ -21,7 +21,7 @@ namespace Game.Gameplay.Board
 
         public void SetPosition(Vector2Int position)
         {
-            transform.localPosition = new Vector3(position.x, 0f, position.y);
+            transform.localPosition = new Vector3(position.x, position.y, 0f);
         }
 
         public Vector2Int Position
@@ -29,7 +29,7 @@ namespace Game.Gameplay.Board
             get
             {
                 var localPosition = transform.localPosition;
-                return new Vector2Int((int)localPosition.x, (int)localPosition.z);
+                return new Vector2Int((int)localPosition.x, (int)localPosition.y);
             }
         }
 
@@ -37,7 +37,10 @@ namespace Game.Gameplay.Board
         {
             if (Selected != this)
             {
-                if (Selected != null) Selected.SetSelected(false);
+                if (Selected != null)
+                {
+                    Selected.SetSelected(false);
+                }
             }
 
             if (value)

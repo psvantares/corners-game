@@ -4,6 +4,14 @@ namespace Game.Gameplay.Board
 {
     public class BoardManager : MonoBehaviour
     {
+        [Header("ROOT")]
+        [SerializeField]
+        private GameObject boardObject;
+
+        [SerializeField]
+        private Transform backgroundTransform;
+
+        [Space]
         [SerializeField]
         private BoardResources boardResources;
 
@@ -14,10 +22,10 @@ namespace Game.Gameplay.Board
         private BoardInput boardInput;
 
         [SerializeField]
-        private Transform boardTransform;
+        private BoardCamera boardCamera;
 
         [SerializeField]
-        private Transform boardHighlightTransform;
+        private BoardProvider boardTransform;
 
         private BoardController cornersController;
 
@@ -33,7 +41,8 @@ namespace Game.Gameplay.Board
 
         public void StartGame(BoardMode boardMode, bool aiOpponent)
         {
-            cornersController = new BoardController(boardTransform, boardHighlightTransform, boardMode, aiOpponent, boardResources, boardConfig);
+            cornersController = new BoardController(boardTransform, boardMode, aiOpponent, boardResources, boardConfig);
+            boardObject.SetActive(true);
         }
 
         public void PauseGame(bool value)
@@ -43,11 +52,10 @@ namespace Game.Gameplay.Board
 
         private void SetupCamera()
         {
-            var cameraTransform = boardInput.BoardCamera.transform;
-            var position = cameraTransform.position;
-            var boardSize = boardConfig.BoardSize;
+            boardCamera.Setup(boardConfig.BoardSize);
 
-            cameraTransform.position = new Vector3((boardSize.x / 2f) - .5f, position.y, (boardSize.y / 2f) - .5f);
+            var cameraPosition = boardCamera.transform.position;
+            backgroundTransform.localPosition = new Vector3(cameraPosition.x, cameraPosition.y, 0);
         }
     }
 }

@@ -8,18 +8,19 @@ namespace Game.Gameplay.Board
     {
         private readonly Board board;
         private readonly BoardCellHighlight highlight;
+        private readonly AIGame ai;
+
         private List<BoardCell> availableToMoveCells;
         private PlayerType activePlayer;
-        private readonly AIGame ai;
         private bool pause;
 
         public event Action<PlayerType> PlayerChanged;
         public event Action<PlayerType> PlayerWin;
 
-        public BoardController(Transform boardTransform, Transform boardHighlightTransform, BoardMode boardMode, bool aiOpponent, BoardResources boardResources, BoardConfig boardConfig)
+        public BoardController(BoardProvider provider, BoardMode boardMode, bool aiOpponent, BoardResources resources, BoardConfig config)
         {
-            board = new Board(boardTransform, boardMode, boardResources, boardConfig);
-            highlight = new BoardCellHighlight(boardConfig.BoardSize.x + boardConfig.BoardSize.y, boardHighlightTransform, boardResources);
+            board = new Board(provider, boardMode, resources, config);
+            highlight = new BoardCellHighlight(config.BoardSize.x + config.BoardSize.y, provider.HighlightTransform, resources);
 
             if (aiOpponent)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Utilities;
 using UnityEngine;
 
 namespace Game.Gameplay.Board
@@ -14,7 +15,7 @@ namespace Game.Gameplay.Board
 
             for (var i = 0; i < max; i++)
             {
-                objects.Add(Utils.Instantiate(boardResources.CellHighlighter, Vector2Int.zero, boardHighlightTransform));
+                objects.Add(Creator.Instantiate(boardResources.CellHighlighter, Vector2Int.zero, boardHighlightTransform));
             }
         }
 
@@ -26,7 +27,7 @@ namespace Game.Gameplay.Board
             {
                 var position = cells[i].Position;
                 var go = objects[i];
-                go.transform.localPosition = new Vector3(position.x, 0.1f, position.y);
+                go.transform.localPosition = new Vector3(position.x, position.y, 0);
                 go.SetActive(true);
             }
         }

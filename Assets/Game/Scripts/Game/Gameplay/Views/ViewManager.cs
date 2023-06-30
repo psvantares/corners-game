@@ -42,6 +42,7 @@ namespace Game.Gameplay.Views
 
             navigationView.NavigationEvent.Subscribe(OnNavigation).AddTo(disposable);
             playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
+            playView.GameModeEvent.Subscribe(OnGameMode).AddTo(disposable);
             playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
             boardView.HomeEvent.Subscribe(OnHome).AddTo(disposable);
         }
@@ -93,6 +94,11 @@ namespace Game.Gameplay.Views
         private void OnDeck(BoardDeckType deckType)
         {
             gameModel.DeckType = deckType;
+        }
+
+        private void OnGameMode(GameMode gameMode)
+        {
+            gameModel.GameMode = gameMode;
         }
 
         private void OnHome(Unit unit)

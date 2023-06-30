@@ -1,5 +1,3 @@
-using Game.Data;
-using Game.Models;
 using UnityEngine;
 
 namespace Game.Gameplay.Board
@@ -15,50 +13,24 @@ namespace Game.Gameplay.Board
 
         [Space]
         [SerializeField]
-        private BoardResources boardResources;
-
-        [SerializeField]
-        private BoardConfig boardConfigDiagonal;
-
-        [SerializeField]
-        private BoardConfig boardConfigSquare;
-
-        [Space]
-        [SerializeField]
         private BoardInput boardInput;
 
         [SerializeField]
         private BoardCamera boardCamera;
-
-        [SerializeField]
-        private BoardProvider boardTransform;
-
-        private IGameModel gameModel;
-        private BoardController boardController;
 
         private void Update()
         {
             boardInput.Update();
         }
 
-        public void Initialize(IGameModel gameModel)
-        {
-            this.gameModel = gameModel;
-        }
-
         public void Clear()
         {
-            boardController.Dispose();
             boardObject.SetActive(false);
         }
 
-        public void StartGame(BoardMode boardMode, bool aiOpponent)
+        public void StartGame(BoardContext context)
         {
-            var config = gameModel.DeckType == BoardDeckType.Diagonal ? boardConfigDiagonal : boardConfigSquare;
-            boardController = new BoardController(boardTransform, boardMode, aiOpponent, boardResources, config);
-
-            SetupCamera(config.BoardSize);
-
+            SetupCamera(context.Config.BoardSize);
             boardObject.SetActive(true);
         }
 

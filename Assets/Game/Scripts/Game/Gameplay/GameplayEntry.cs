@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Gameplay.Board;
+using Game.Gameplay.Pool;
 using Game.Gameplay.Theme;
 using Game.Gameplay.Views;
 using Game.Models;
@@ -19,6 +20,13 @@ namespace Game.Gameplay
         [SerializeField]
         private ThemeManager themeManager;
 
+        [Space]
+        [SerializeField]
+        private BoardAssets boardAssets;
+
+        [SerializeField]
+        private BoardProvider boardProvider;
+
         private IGameModel gameModel;
 
         private readonly List<IDisposable> disposables = new();
@@ -27,7 +35,17 @@ namespace Game.Gameplay
         {
             gameModel = new GameModel();
 
-            var gameplayController = new GameplayController(gameModel, viewManager, boardManager, themeManager);
+            var poolController = new PoolController(boardAssets, boardProvider);
+            var gameplayController = new GameplayController
+            (
+                gameModel,
+                viewManager,
+                boardManager,
+                themeManager,
+                boardAssets,
+                boardProvider,
+                poolController
+            );
 
             disposables.Add(gameplayController);
         }

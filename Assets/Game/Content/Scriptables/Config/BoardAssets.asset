@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f43f5d57a140349b768108600bcc1c, type: 3}
+  m_Name: BoardAssets
+  m_EditorClassIdentifier: 
+  <BoardConfigDiagonal>k__BackingField: {fileID: 11400000, guid: 292f38b829d16604191a19c2521acca7, type: 2}
+  <BoardConfigSquare>k__BackingField: {fileID: 11400000, guid: bc2dc8fa6a0984eafb79beac1927ab77, type: 2}
+  <CellBlack>k__BackingField: {fileID: 8408295099250416339, guid: ba63a8ae45e0946f187d1bb93645a563, type: 3}
+  <CellWhite>k__BackingField: {fileID: 8408295099250416339, guid: 75a11334f448114488feda6726355457, type: 3}
+  <CellHighlight>k__BackingField: {fileID: 4841880142831527590, guid: 7aae6f315f5f78b429df81938c7b6d81, type: 3}
+  <CheckerBlack>k__BackingField: {fileID: 2594826177488360554, guid: 58180f02ec63b9e46b0653f7b03ea920, type: 3}
+  <CheckerWhite>k__BackingField: {fileID: 7516241831562585370, guid: 57dca05d78c100f4c86787bb5134b024, type: 3}

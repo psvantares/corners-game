@@ -9,6 +9,9 @@ namespace Game.Core
         [SerializeField]
         protected bool SafeAreaEnabled;
 
+        [SerializeField]
+        protected bool IsDownOffset;
+
         [Space]
         [SerializeField]
         protected CanvasScaler CanvasScaler;
@@ -49,6 +52,11 @@ namespace Game.Core
 
             upOffset *= CanvasScaler.referenceResolution.y;
             downOffset *= CanvasScaler.referenceResolution.y;
+
+            if (!IsDownOffset)
+            {
+                downOffset = 0;
+            }
 
             var newOffsetMin = new Vector2(0f, downOffset);
             var newOffsetMax = new Vector2(0f, -upOffset);

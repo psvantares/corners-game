@@ -13,7 +13,6 @@ namespace Game.Gameplay.Board
 
         private List<BoardCell> availableToMoveCells;
         private PlayerType activePlayer;
-        private bool pause;
 
         public event Action<PlayerType> PlayerChanged;
         public event Action<PlayerType> PlayerWin;
@@ -21,7 +20,10 @@ namespace Game.Gameplay.Board
         public BoardController(BoardProvider provider, BoardMode boardMode, bool aiOpponent, BoardResources resources, BoardConfig config)
         {
             board = new Board(provider, boardMode, resources, config);
+            board.Initialize();
+
             highlight = new BoardCellHighlight(config.BoardSize.x + config.BoardSize.y, provider.HighlightTransform, resources);
+            highlight.Initialize();
 
             if (aiOpponent)
             {
@@ -33,25 +35,16 @@ namespace Game.Gameplay.Board
             SetActivePlayer(PlayerType.White);
         }
 
-        private void OnCellSelected(Vector2Int position)
+        public void Dispose()
         {
-            var cell = board.GetCell(position);
+            BoardInput.CellSelected -= OnCellSelected;
 
-            if (cell == null)
-            {
-                return;
-            }
-
-            ProcessLogic(cell);
+            board.Dispose();
+            highlight.Dispose();
         }
 
         private void ProcessLogic(BoardCell cell)
         {
-            if (pause)
-            {
-                return;
-            }
-
             if (IsAiTurn())
             {
                 return;
@@ -105,11 +98,20 @@ namespace Game.Gameplay.Board
             Checker.Selected.SetSelected(false);
         }
 
-        private bool IsAiTurn() => ai != null && ai.Type == activePlayer;
+        private bool IsAiTurn()
+        {
+            return ai != null && ai.Type == activePlayer;
+        }
 
-        private void HighlightAvailableToMoveCells(List<BoardCell> cells) => highlight.Show(cells);
+        private void HighlightAvailableToMoveCells(List<BoardCell> cells)
+        {
+            highlight.Show(cells);
+        }
 
-        private void SwitchPlayer() => SetActivePlayer(NextPlayer());
+        private void SwitchPlayer()
+        {
+            SetActivePlayer(NextPlayer());
+        }
 
         private PlayerType NextPlayer()
         {
@@ -127,12 +129,18 @@ namespace Game.Gameplay.Board
             return board.IsPlayerOnOpponentPositions(player == PlayerType.Black ? PlayerType.Black : PlayerType.White);
         }
 
-        public void Pause(bool value) => pause = value;
+        // Events
 
-        public void Dispose()
+        private void OnCellSelected(Vector2Int position)
         {
-            BoardInput.CellSelected -= OnCellSelected;
-            highlight.Dispose();
+            var cell = board.GetCell(position);
+
+            if (cell == null)
+            {
+                return;
+            }
+
+            ProcessLogic(cell);
         }
     }
 }

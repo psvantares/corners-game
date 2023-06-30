@@ -39,6 +39,7 @@ namespace Game.Gameplay
             boardManager.Initialize(gameModel);
 
             viewManager.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
+            viewManager.HomeEvent.Subscribe(OnHome).AddTo(disposable);
         }
 
         // Events
@@ -46,6 +47,11 @@ namespace Game.Gameplay
         private void OnStartGame(Unit unit)
         {
             boardManager.StartGame(BoardMode.Normal, true);
+        }
+
+        private void OnHome(Unit unit)
+        {
+            boardManager.Clear();
         }
     }
 }

@@ -29,10 +29,9 @@ namespace Game.Bootstrap.Views
         public void Initialize()
         {
             percentText.gameObject.SetActive(usePercents);
-            progressSlider.value = 0;
+            progressSlider.value = oldValue = 0.1f;
             percentText.text = "0%";
             percentValue = 0f;
-            oldValue = 0f;
             progress = 1f;
 
             updateLoadingProgress = Observable.EveryUpdate().Subscribe(UpdateLoadingProgress);

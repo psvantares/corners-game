@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
 using Game.Utilities;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Game.Gameplay.Board
 {
-    public class Board
+    public class Board : IDisposable
     {
         private readonly List<BoardCell> cells = new();
         private readonly List<Checker> checkers = new();
@@ -24,11 +27,9 @@ namespace Game.Gameplay.Board
             this.boardMode = boardMode;
             this.resources = resources;
             this.config = config;
-
-            Initialize();
         }
 
-        private void Initialize()
+        public void Initialize()
         {
             for (var x = 0; x < config.BoardSize.x; x++)
             {
@@ -56,13 +57,34 @@ namespace Game.Gameplay.Board
             checkers.AddRange(whiteCheckers);
         }
 
-        private Checker CreateChecker(PlayerType type, Vector2Int position)
+        public void Dispose()
         {
-            var isWhite = type == PlayerType.White;
-            var prefab = isWhite ? resources.CheckerWhite : resources.CheckerBlack;
-            var checker = Creator.Instantiate(prefab, position, isWhite ? provider.WhiteTransform : provider.BlackTransform);
-            checker.SetPosition(position);
-            return checker;
+            // TODO: temporarily, need add pool
+
+            for (var i = 0; i < cells.Count; i++)
+            {
+                Object.Destroy(cells[i].gameObject);
+            }
+
+            for (var i = 0; i < checkers.Count; i++)
+            {
+                Object.Destroy(checkers[i].gameObject);
+            }
+
+            for (var i = 0; i < blackCheckers.Count; i++)
+            {
+                Object.Destroy(blackCheckers[i].gameObject);
+            }
+
+            for (var i = 0; i < whiteCheckers.Count; i++)
+            {
+                Object.Destroy(whiteCheckers[i].gameObject);
+            }
+
+            cells.Clear();
+            checkers.Clear();
+            blackCheckers.Clear();
+            whiteCheckers.Clear();
         }
 
         public Checker GetChecker(BoardCell boardCell)
@@ -83,29 +105,6 @@ namespace Game.Gameplay.Board
         public BoardCell GetCell(Vector2Int position)
         {
             return cells.FirstOrDefault(c => c.Position == position);
-        }
-
-        private bool IsCellEmpty(BoardCell boardCell)
-        {
-            return GetChecker(boardCell) == null;
-        }
-
-        private bool IsCellEmpty(Vector2Int position)
-        {
-            var cell = GetCell(position);
-            return IsCellEmpty(cell);
-        }
-
-        private bool IsPositionOutOfBounds(Vector2Int position)
-        {
-            return position.x < 0 || position.x >= config.BoardSize.x || position.y < 0 || position.y >= config.BoardSize.y;
-        }
-
-        public Checker GetRandomChecker(PlayerType playerType)
-        {
-            return playerType == PlayerType.Black
-                ? blackCheckers[Random.Range(0, blackCheckers.Count)]
-                : whiteCheckers[Random.Range(0, whiteCheckers.Count)];
         }
 
         public BoardCell GetRandomStartCell(PlayerType playerType)
@@ -196,6 +195,38 @@ namespace Game.Gameplay.Board
             }
 
             return result;
+        }
+
+        public Checker GetRandomChecker(PlayerType playerType)
+        {
+            return playerType == PlayerType.Black
+                ? blackCheckers[Random.Range(0, blackCheckers.Count)]
+                : whiteCheckers[Random.Range(0, whiteCheckers.Count)];
+        }
+
+        private Checker CreateChecker(PlayerType type, Vector2Int position)
+        {
+            var isWhite = type == PlayerType.White;
+            var prefab = isWhite ? resources.CheckerWhite : resources.CheckerBlack;
+            var checker = Creator.Instantiate(prefab, position, isWhite ? provider.WhiteTransform : provider.BlackTransform);
+            checker.SetPosition(position);
+            return checker;
+        }
+
+        private bool IsCellEmpty(BoardCell boardCell)
+        {
+            return GetChecker(boardCell) == null;
+        }
+
+        private bool IsCellEmpty(Vector2Int position)
+        {
+            var cell = GetCell(position);
+            return IsCellEmpty(cell);
+        }
+
+        private bool IsPositionOutOfBounds(Vector2Int position)
+        {
+            return position.x < 0 || position.x >= config.BoardSize.x || position.y < 0 || position.y >= config.BoardSize.y;
         }
     }
 }

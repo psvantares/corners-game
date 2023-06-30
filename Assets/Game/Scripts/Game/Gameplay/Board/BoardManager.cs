@@ -34,7 +34,7 @@ namespace Game.Gameplay.Board
         private BoardProvider boardTransform;
 
         private IGameModel gameModel;
-        private BoardController cornersController;
+        private BoardController boardController;
 
         private void Update()
         {
@@ -46,19 +46,19 @@ namespace Game.Gameplay.Board
             this.gameModel = gameModel;
         }
 
+        public void Clear()
+        {
+            boardController.Dispose();
+        }
+
         public void StartGame(BoardMode boardMode, bool aiOpponent)
         {
             var config = gameModel.DeckType == BoardDeckType.Diagonal ? boardConfigDiagonal : boardConfigSquare;
-            cornersController = new BoardController(boardTransform, boardMode, aiOpponent, boardResources, config);
+            boardController = new BoardController(boardTransform, boardMode, aiOpponent, boardResources, config);
 
             SetupCamera(config.BoardSize);
 
             boardObject.SetActive(true);
-        }
-
-        public void PauseGame(bool value)
-        {
-            cornersController.Pause(value);
         }
 
         private void SetupCamera(Vector2Int boardSize)

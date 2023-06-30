@@ -2,14 +2,26 @@ using System;
 using System.Collections.Generic;
 using Game.Utilities;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Game.Gameplay.Board
 {
     public class BoardCellHighlight : IDisposable
     {
-        private readonly List<GameObject> objects;
+        private readonly int max;
+        private readonly Transform boardHighlightTransform;
+        private readonly BoardResources boardResources;
+
+        private List<GameObject> objects;
 
         public BoardCellHighlight(int max, Transform boardHighlightTransform, BoardResources boardResources)
+        {
+            this.max = max;
+            this.boardHighlightTransform = boardHighlightTransform;
+            this.boardResources = boardResources;
+        }
+
+        public void Initialize()
         {
             objects = new List<GameObject>(max);
 
@@ -42,6 +54,11 @@ namespace Game.Gameplay.Board
 
         public void Dispose()
         {
+            for (var i = 0; i < objects.Count; i++)
+            {
+                Object.Destroy(objects[i].gameObject);
+            }
+
             objects.Clear();
         }
     }

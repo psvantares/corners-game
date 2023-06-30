@@ -60,7 +60,7 @@ namespace Game.Gameplay
 
         private void Clear()
         {
-            boardController.Dispose();
+            boardController?.Dispose();
             boardController = null;
         }
 

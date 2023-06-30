@@ -54,6 +54,7 @@ namespace Game.Gameplay.Board
         private void InitializeHighlight(BoardContext context)
         {
             cellsHighlight = new List<CellHighlight>();
+            availableToMoveCells = new List<Cell>();
 
             var max = context.Config.BoardSize.x + context.Config.BoardSize.y;
             var pool = context.Pool;

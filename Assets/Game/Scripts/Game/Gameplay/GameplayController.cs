@@ -52,6 +52,7 @@ namespace Game.Gameplay
         private void OnHome(Unit unit)
         {
             boardManager.Clear();
+            viewManager.ShowHome();
         }
     }
 }

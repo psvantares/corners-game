@@ -56,6 +56,16 @@ namespace Game.Gameplay.Views
             this.gameModel = gameModel;
         }
 
+        public void ShowHome()
+        {
+            navigationView.SetActive(true);
+
+            boardView.SetActive(false);
+            boardView.SetActiveTimer(false);
+
+            OnNavigation(NavigationType.Play);
+        }
+
         // Events
 
         private void OnNavigation(NavigationType navigationType)

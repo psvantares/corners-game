@@ -49,6 +49,7 @@ namespace Game.Gameplay.Board
         public void Clear()
         {
             boardController.Dispose();
+            boardObject.SetActive(false);
         }
 
         public void StartGame(BoardMode boardMode, bool aiOpponent)

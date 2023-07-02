@@ -6,6 +6,6 @@ namespace Game.Data
         Play,
         Market,
         Profile,
-        Settings
+        Settings,
     }
 }

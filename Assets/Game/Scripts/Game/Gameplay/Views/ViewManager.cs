@@ -27,6 +27,9 @@ namespace Game.Gameplay.Views
         [SerializeField]
         private BoardView boardView;
 
+        [SerializeField]
+        private WinView winView;
+
         private IGameModel gameModel;
 
         private readonly CompositeDisposable disposable = new();
@@ -46,6 +49,7 @@ namespace Game.Gameplay.Views
             playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
             playView.BoarModeEvent.Subscribe(OnBoardMode).AddTo(disposable);
             boardView.HomeEvent.Subscribe(OnHome).AddTo(disposable);
+            winView.ContinueEvent.Subscribe(OnContinue).AddTo(disposable);
         }
 
         private void OnDisable()
@@ -66,6 +70,15 @@ namespace Game.Gameplay.Views
             boardView.SetActiveTimer(false);
 
             OnNavigation(NavigationType.Play);
+        }
+
+        public void ShowWin(PlayerType playerType)
+        {
+            boardView.SetActive(false);
+            boardView.SetActiveTimer(false);
+
+            winView.SetTitleText(playerType);
+            winView.SetActive(true);
         }
 
         // Events
@@ -110,6 +123,14 @@ namespace Game.Gameplay.Views
         private void OnHome(Unit unit)
         {
             homeEvent?.OnNext(unit);
+        }
+
+        private void OnContinue(Unit unit)
+        {
+            navigationView.SetActive(true);
+            winView.SetActive(false);
+
+            OnNavigation(NavigationType.Play);
         }
     }
 }

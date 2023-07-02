@@ -19,7 +19,8 @@ namespace Game.Gameplay
         private readonly BoardProvider provider;
         private readonly PoolController pool;
 
-        private readonly CompositeDisposable disposable = new();
+        private readonly CompositeDisposable disposables = new();
+        private readonly CompositeDisposable boardDisposables = new();
 
         private BoardController boardController;
 
@@ -47,19 +48,20 @@ namespace Game.Gameplay
 
         public void Dispose()
         {
-            disposable.Clear();
-            disposable.Dispose();
+            disposables.Clear();
+            disposables.Dispose();
         }
 
         private void Initialize()
         {
             viewManager.Initialize(gameModel);
-            viewManager.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
-            viewManager.HomeEvent.Subscribe(OnHome).AddTo(disposable);
+            viewManager.StartGameEvent.Subscribe(OnStartGame).AddTo(disposables);
+            viewManager.HomeEvent.Subscribe(OnHome).AddTo(disposables);
         }
 
         private void Clear()
         {
+            boardDisposables.Clear();
             boardController?.Dispose();
             boardController = null;
         }
@@ -72,6 +74,7 @@ namespace Game.Gameplay
             var boardContext = new BoardContext(gameModel, config, pool);
 
             boardController = new BoardController(boardContext);
+            boardController.PlayerWinEvent.Subscribe(OnPlayerWin).AddTo(boardDisposables);
             boardManager.StartGame(boardContext);
         }
 
@@ -82,6 +85,15 @@ namespace Game.Gameplay
             pool.Clear();
             boardManager.Clear();
             viewManager.ShowHome();
+        }
+
+        private void OnPlayerWin(PlayerType playerType)
+        {
+            Clear();
+
+            pool.Clear();
+            boardManager.Clear();
+            viewManager.ShowWin(playerType);
         }
     }
 }

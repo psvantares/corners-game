@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Data;
+using UniRx;
 using UnityEngine;
 
 namespace Game.Gameplay.Board
@@ -14,8 +15,11 @@ namespace Game.Gameplay.Board
         private List<CellHighlight> cellsHighlight;
         private PlayerType activePlayer;
 
-        public event Action<PlayerType> PlayerChanged;
-        public event Action<PlayerType> PlayerWin;
+        private readonly ISubject<PlayerType> playerChangedEvent = new Subject<PlayerType>();
+        private readonly ISubject<PlayerType> playerWinEvent = new Subject<PlayerType>();
+
+        public IObservable<PlayerType> PlayerChangedEvent => playerChangedEvent;
+        public IObservable<PlayerType> PlayerWinEvent => playerWinEvent;
 
         public BoardController(BoardContext context)
         {
@@ -131,12 +135,16 @@ namespace Game.Gameplay.Board
                 if (!IsWinner(activePlayer))
                 {
                     SwitchPlayer();
-                    if (IsAiTurn()) MakeAiMove();
+
+                    if (IsAiTurn())
+                    {
+                        MakeAiMove();
+                    }
                 }
                 else
                 {
                     Unsubscribes();
-                    PlayerWin?.Invoke(activePlayer);
+                    playerWinEvent?.OnNext(activePlayer);
                 }
             }
         }
@@ -171,7 +179,7 @@ namespace Game.Gameplay.Board
         private void SetActivePlayer(PlayerType playerType)
         {
             activePlayer = playerType;
-            PlayerChanged?.Invoke(activePlayer);
+            playerChangedEvent?.OnNext(activePlayer);
         }
 
         private bool IsWinner(PlayerType player)

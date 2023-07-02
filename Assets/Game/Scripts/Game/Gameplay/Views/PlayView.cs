@@ -29,22 +29,26 @@ namespace Game.Gameplay.Views
         [SerializeField]
         private SmartToggle squareToggle;
 
+        [Space]
+        [SerializeField]
+        private SmartToggle boardNormalToggle;
+
+        [SerializeField]
+        private SmartToggle boardDiagonalToggle;
+
+        [SerializeField]
+        private SmartToggle boardVerticalHorizontalToggle;
+
         private readonly CompositeDisposable disposable = new();
         private readonly ISubject<BoardDeckType> deckEvent = new Subject<BoardDeckType>();
         private readonly ISubject<GameMode> gameModeEvent = new Subject<GameMode>();
+        private readonly ISubject<BoardMode> boarModeEvent = new Subject<BoardMode>();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
 
         public IObservable<BoardDeckType> DeckEvent => deckEvent;
         public IObservable<GameMode> GameModeEvent => gameModeEvent;
+        public IObservable<BoardMode> BoarModeEvent => boarModeEvent;
         public IObservable<Unit> StartGameEvent => startGameEvent;
-
-        protected override void Start()
-        {
-            base.Start();
-
-            ForceDeckType(BoardDeckType.Square);
-            ForceGameMode(GameMode.Bot);
-        }
 
         public void OnEnable()
         {
@@ -58,39 +62,15 @@ namespace Game.Gameplay.Views
 
             diagonalToggle.ClickedEvent.Subscribe(_ => OnDeck(BoardDeckType.Diagonal)).AddTo(disposable);
             squareToggle.ClickedEvent.Subscribe(_ => OnDeck(BoardDeckType.Square)).AddTo(disposable);
+
+            boardNormalToggle.ClickedEvent.Subscribe(_ => OnBoardMode(BoardMode.Normal)).AddTo(disposable);
+            boardDiagonalToggle.ClickedEvent.Subscribe(_ => OnBoardMode(BoardMode.Diagonal)).AddTo(disposable);
+            boardVerticalHorizontalToggle.ClickedEvent.Subscribe(_ => OnBoardMode(BoardMode.VerticalHorizontal)).AddTo(disposable);
         }
 
         private void OnDisable()
         {
             disposable.Clear();
-        }
-
-        private void ForceDeckType(BoardDeckType deckType)
-        {
-            if (deckType == BoardDeckType.Square)
-            {
-                squareToggle.ForceClick(true);
-            }
-            else if (deckType == BoardDeckType.Diagonal)
-            {
-                diagonalToggle.ForceClick(true);
-            }
-        }
-
-        private void ForceGameMode(GameMode gameMode)
-        {
-            if (gameMode == GameMode.Bot)
-            {
-                botToggle.ForceClick(true);
-            }
-            else if (gameMode == GameMode.Player)
-            {
-                playerToggle.ForceClick(true);
-            }
-            else if (gameMode == GameMode.Network)
-            {
-                networkToggle.ForceClick(true);
-            }
         }
 
         // Events
@@ -103,6 +83,11 @@ namespace Game.Gameplay.Views
         private void OnGameMode(GameMode gameMode)
         {
             gameModeEvent?.OnNext(gameMode);
+        }
+
+        private void OnBoardMode(BoardMode boardMode)
+        {
+            boarModeEvent?.OnNext(boardMode);
         }
 
         private void OnStartGame(Unit unit)

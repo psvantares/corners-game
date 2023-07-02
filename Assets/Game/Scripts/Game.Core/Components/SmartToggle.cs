@@ -18,6 +18,7 @@ namespace Game.Core
         [SerializeField]
         protected TMP_Text MainText;
 
+        private bool isOn;
         private Sequence sequence;
         private readonly ISubject<bool> clickedEvent = new Subject<bool>();
 
@@ -63,6 +64,13 @@ namespace Game.Core
 
         protected virtual void OnClick(bool isOn)
         {
+            if (this.isOn == isOn)
+            {
+                return;
+            }
+
+            this.isOn = isOn;
+
             if (AnimationTransform == null)
             {
                 clickedEvent.OnNext(isOn);

@@ -44,6 +44,7 @@ namespace Game.Gameplay.Views
             playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
             playView.GameModeEvent.Subscribe(OnGameMode).AddTo(disposable);
             playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
+            playView.BoarModeEvent.Subscribe(OnBoardMode).AddTo(disposable);
             boardView.HomeEvent.Subscribe(OnHome).AddTo(disposable);
         }
 
@@ -99,6 +100,11 @@ namespace Game.Gameplay.Views
         private void OnGameMode(GameMode gameMode)
         {
             gameModel.GameMode = gameMode;
+        }
+
+        private void OnBoardMode(BoardMode boardMode)
+        {
+            gameModel.BoardMode = boardMode;
         }
 
         private void OnHome(Unit unit)

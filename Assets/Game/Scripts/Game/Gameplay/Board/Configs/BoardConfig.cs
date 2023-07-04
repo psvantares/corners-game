@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.Board
 {
-    [CreateAssetMenu(fileName = "BoardConfig", menuName = "onfigs/Board/BoardConfig", order = 1)]
+    [CreateAssetMenu(fileName = "BoardConfig", menuName = "Configs/Board/BoardConfig", order = 1)]
     public class BoardConfig : ScriptableObject
     {
         [SerializeField]

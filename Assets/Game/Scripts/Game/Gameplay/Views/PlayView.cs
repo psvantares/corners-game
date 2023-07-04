@@ -41,12 +41,12 @@ namespace Game.Gameplay.Views
 
         private readonly CompositeDisposable disposable = new();
         private readonly ISubject<BoardDeckType> deckEvent = new Subject<BoardDeckType>();
-        private readonly ISubject<GameMode> gameModeEvent = new Subject<GameMode>();
+        private readonly ISubject<GameplayMode> gameplayModeEvent = new Subject<GameplayMode>();
         private readonly ISubject<BoardMode> boarModeEvent = new Subject<BoardMode>();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
 
         public IObservable<BoardDeckType> DeckEvent => deckEvent;
-        public IObservable<GameMode> GameModeEvent => gameModeEvent;
+        public IObservable<GameplayMode> GameplayModeEvent => gameplayModeEvent;
         public IObservable<BoardMode> BoarModeEvent => boarModeEvent;
         public IObservable<Unit> StartGameEvent => startGameEvent;
 
@@ -56,9 +56,9 @@ namespace Game.Gameplay.Views
 
             startGameButton.ClickedEvent.Subscribe(OnStartGame).AddTo(disposable);
 
-            botToggle.ClickedEvent.Subscribe(_ => OnGameMode(GameMode.Bot)).AddTo(disposable);
-            playerToggle.ClickedEvent.Subscribe(_ => OnGameMode(GameMode.Player)).AddTo(disposable);
-            networkToggle.ClickedEvent.Subscribe(_ => OnGameMode(GameMode.Network)).AddTo(disposable);
+            botToggle.ClickedEvent.Subscribe(_ => OnGameplayMode(GameplayMode.Bot)).AddTo(disposable);
+            playerToggle.ClickedEvent.Subscribe(_ => OnGameplayMode(GameplayMode.Player)).AddTo(disposable);
+            networkToggle.ClickedEvent.Subscribe(_ => OnGameplayMode(GameplayMode.Network)).AddTo(disposable);
 
             diagonalToggle.ClickedEvent.Subscribe(_ => OnDeck(BoardDeckType.Diagonal)).AddTo(disposable);
             squareToggle.ClickedEvent.Subscribe(_ => OnDeck(BoardDeckType.Square)).AddTo(disposable);
@@ -80,9 +80,9 @@ namespace Game.Gameplay.Views
             deckEvent?.OnNext(deckType);
         }
 
-        private void OnGameMode(GameMode gameMode)
+        private void OnGameplayMode(GameplayMode gameplayMode)
         {
-            gameModeEvent?.OnNext(gameMode);
+            gameplayModeEvent?.OnNext(gameplayMode);
         }
 
         private void OnBoardMode(BoardMode boardMode)

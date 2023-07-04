@@ -1,6 +1,6 @@
 ﻿namespace Game.Data
 {
-    public enum GameMode : byte
+    public enum GameplayMode : byte
     {
         Bot,
         Player,

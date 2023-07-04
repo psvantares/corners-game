@@ -49,7 +49,7 @@ namespace Game.Gameplay.Board
 
         private void InitializeBot(BoardContext context)
         {
-            if (context.GameModel.GameMode == GameMode.Bot)
+            if (context.GameModel.GameplayMode == GameplayMode.Bot)
             {
                 bot = new BotGame(PlayerType.Black, board);
             }

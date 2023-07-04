@@ -1,11 +1,14 @@
 using System;
+using Fusion;
 using Game.Data;
 using Game.Gameplay.Board;
 using Game.Gameplay.Pool;
 using Game.Gameplay.Theme;
 using Game.Gameplay.Views;
 using Game.Models;
+using Game.Network;
 using UniRx;
+using Object = UnityEngine.Object;
 
 namespace Game.Gameplay
 {
@@ -17,12 +20,14 @@ namespace Game.Gameplay
         private readonly ThemeManager themeManager;
         private readonly BoardAssets assets;
         private readonly BoardProvider provider;
+        private readonly NetworkRunner networkRunnerPrefab;
         private readonly PoolController pool;
 
         private readonly CompositeDisposable disposables = new();
         private readonly CompositeDisposable boardDisposables = new();
 
         private BoardController boardController;
+        private NetworkRunner runnerInstance;
 
         public GameplayController
         (
@@ -32,6 +37,7 @@ namespace Game.Gameplay
             ThemeManager themeManager,
             BoardAssets assets,
             BoardProvider provider,
+            NetworkRunner networkRunnerPrefab,
             PoolController pool
         )
         {
@@ -41,6 +47,7 @@ namespace Game.Gameplay
             this.themeManager = themeManager;
             this.assets = assets;
             this.provider = provider;
+            this.networkRunnerPrefab = networkRunnerPrefab;
             this.pool = pool;
 
             Initialize();
@@ -57,6 +64,29 @@ namespace Game.Gameplay
             viewManager.Initialize(gameModel);
             viewManager.StartGameEvent.Subscribe(OnStartGame).AddTo(disposables);
             viewManager.HomeEvent.Subscribe(OnHome).AddTo(disposables);
+        }
+
+        private async void StartGame(GameMode mode, string roomName, string sceneName)
+        {
+            runnerInstance = Object.FindObjectOfType<NetworkRunner>();
+
+            if (runnerInstance == null)
+            {
+                runnerInstance = Object.Instantiate(networkRunnerPrefab);
+            }
+
+            runnerInstance.ProvideInput = true;
+
+            var startGameArgs = new StartGameArgs
+            {
+                GameMode = mode,
+                SessionName = roomName,
+                ObjectPool = runnerInstance.GetComponent<NetworkObjectPoolDefault>(),
+            };
+
+            await runnerInstance.StartGame(startGameArgs);
+
+            // runnerInstance.SetActiveScene(sceneName);
         }
 
         private void Clear()

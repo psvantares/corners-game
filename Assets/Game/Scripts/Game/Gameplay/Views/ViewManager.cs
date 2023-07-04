@@ -45,7 +45,7 @@ namespace Game.Gameplay.Views
 
             navigationView.NavigationEvent.Subscribe(OnNavigation).AddTo(disposable);
             playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
-            playView.GameModeEvent.Subscribe(OnGameMode).AddTo(disposable);
+            playView.GameplayModeEvent.Subscribe(OnGameplayMode).AddTo(disposable);
             playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
             playView.BoarModeEvent.Subscribe(OnBoardMode).AddTo(disposable);
             boardView.HomeEvent.Subscribe(OnHome).AddTo(disposable);
@@ -110,9 +110,9 @@ namespace Game.Gameplay.Views
             gameModel.DeckType = deckType;
         }
 
-        private void OnGameMode(GameMode gameMode)
+        private void OnGameplayMode(GameplayMode gameplayMode)
         {
-            gameModel.GameMode = gameMode;
+            gameModel.GameplayMode = gameplayMode;
         }
 
         private void OnBoardMode(BoardMode boardMode)

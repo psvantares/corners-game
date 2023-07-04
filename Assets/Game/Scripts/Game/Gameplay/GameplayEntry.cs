@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Fusion;
 using Game.Gameplay.Board;
 using Game.Gameplay.Pool;
 using Game.Gameplay.Theme;
@@ -27,6 +28,10 @@ namespace Game.Gameplay
         [SerializeField]
         private BoardProvider boardProvider;
 
+        [Space]
+        [SerializeField]
+        private NetworkRunner networkRunnerPrefab;
+
         private IGameModel gameModel;
 
         private readonly List<IDisposable> disposables = new();
@@ -44,6 +49,7 @@ namespace Game.Gameplay
                 themeManager,
                 boardAssets,
                 boardProvider,
+                networkRunnerPrefab,
                 poolController
             );
 

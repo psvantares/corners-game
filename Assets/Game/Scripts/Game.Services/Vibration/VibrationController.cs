@@ -1,7 +1,7 @@
 using System;
 using Game.Utilities;
 
-namespace Game.Services.Vibration
+namespace Game.Services
 {
     public class VibrationController : IVibrationController, IVibration
     {

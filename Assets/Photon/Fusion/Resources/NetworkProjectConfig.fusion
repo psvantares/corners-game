@@ -155,7 +155,14 @@
     },
     "AssembliesToWeave": [
         "Assembly-CSharp",
-        "Assembly-CSharp-firstpass"
+        "Assembly-CSharp-firstpass",
+        "Game",
+        "Game.Core",
+        "Game.Data",
+        "Game.Models",
+        "Game.Services",
+        "Game.Utilities",
+        "Photon.Fusion"
     ],
     "UseSerializableDictionary": true,
     "NullChecksForNetworkedProperties": true,

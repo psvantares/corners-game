@@ -4,7 +4,7 @@ using Game.Data;
 using UniRx;
 using UnityEngine;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     public class BoardController : IDisposable
     {

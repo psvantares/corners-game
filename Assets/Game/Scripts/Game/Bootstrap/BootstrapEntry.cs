@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Game.Bootstrap.Views;
 using UnityEngine;
 
 namespace Game.Bootstrap
@@ -14,15 +13,18 @@ namespace Game.Bootstrap
 
         private void Awake()
         {
-            var bootstrapController = new BootstrapController(loaderView);
-
-            disposables.Add(bootstrapController);
+            Initialize();
         }
 
         private void OnDestroy()
         {
             disposables.ForEach(x => x.Dispose());
             disposables.Clear();
+        }
+
+        private void Initialize()
+        {
+            disposables.Add(new BootstrapController(loaderView));
         }
     }
 }

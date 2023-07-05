@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     [CreateAssetMenu(fileName = "BoardAssets", menuName = "Configs/Board/BoardAssets", order = 1)]
     public class BoardAssets : ScriptableObject

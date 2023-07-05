@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     [CreateAssetMenu(fileName = "BoardConfig", menuName = "Configs/Board/BoardConfig", order = 1)]
     public class BoardConfig : ScriptableObject

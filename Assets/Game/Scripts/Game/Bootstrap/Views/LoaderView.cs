@@ -4,7 +4,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Bootstrap.Views
+namespace Game.Bootstrap
 {
     public class LoaderView : MonoBehaviour
     {

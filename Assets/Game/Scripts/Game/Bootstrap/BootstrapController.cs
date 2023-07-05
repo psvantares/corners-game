@@ -1,21 +1,24 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Game.Bootstrap.Views;
+using Game.Core;
+using Game.Models;
+using Game.Services;
 using UniRx;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace Game.Bootstrap
 {
     public class BootstrapController : IDisposable
     {
         private readonly LoaderView loaderView;
-
         private readonly CompositeDisposable disposable = new();
 
         public BootstrapController(LoaderView loaderView)
         {
             this.loaderView = loaderView;
 
+            InitializeLocator();
             Initialize();
         }
 
@@ -28,6 +31,20 @@ namespace Game.Bootstrap
         private void Initialize()
         {
             InitializeAsync().Forget();
+        }
+
+        private static void InitializeLocator()
+        {
+            ServiceLocator.Initialize();
+
+            var audioManager = Object.FindObjectOfType<AudioManager>();
+            var vibrationManager = Object.FindObjectOfType<VibrationManager>();
+            var themeManager = Object.FindObjectOfType<ThemeManager>();
+
+            ServiceLocator.Instance.Register(new AudioService(audioManager));
+            ServiceLocator.Instance.Register(new VibrationService(vibrationManager));
+            ServiceLocator.Instance.Register(new ThemeService(themeManager));
+            ServiceLocator.Instance.Register(new GameService(new GameModel()));
         }
 
         private async UniTask InitializeAsync()

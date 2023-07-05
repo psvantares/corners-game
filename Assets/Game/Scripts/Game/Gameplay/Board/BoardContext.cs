@@ -1,7 +1,6 @@
-﻿using Game.Gameplay.Pool;
-using Game.Models;
+﻿using Game.Models;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     public class BoardContext
     {

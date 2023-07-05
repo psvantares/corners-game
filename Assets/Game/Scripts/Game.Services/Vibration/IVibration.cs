@@ -1,4 +1,4 @@
-namespace Game.Services.Vibration
+namespace Game.Services
 {
     public interface IVibration
     {

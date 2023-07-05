@@ -1,55 +1,35 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Fusion;
-using Game.Gameplay.Board;
-using Game.Gameplay.Pool;
-using Game.Gameplay.Theme;
-using Game.Gameplay.Views;
-using Game.Models;
+using Game.Core;
+using Game.Services;
 using UnityEngine;
 
 namespace Game.Gameplay
 {
     public class GameplayEntry : MonoBehaviour
     {
-        [SerializeField]
-        private ViewManager viewManager;
-
+        [Header("MANAGERS")]
         [SerializeField]
         private BoardManager boardManager;
 
-        [SerializeField]
-        private ThemeManager themeManager;
-
-        [Space]
-        [SerializeField]
-        private BoardAssets boardAssets;
-
+        [Header("PROVIDERS")]
         [SerializeField]
         private BoardProvider boardProvider;
 
-        [Space]
+        [Header("CONFIGS")]
         [SerializeField]
-        private NetworkRunner networkRunnerPrefab;
-
-        private IGameModel gameModel;
+        private BoardAssets boardAssets;
 
         private readonly List<IDisposable> disposables = new();
 
         private void Awake()
         {
-            gameModel = new GameModel();
-
             var poolController = new PoolController(boardAssets, boardProvider);
             var gameplayController = new GameplayController
             (
-                gameModel,
-                viewManager,
                 boardManager,
-                themeManager,
                 boardAssets,
                 boardProvider,
-                networkRunnerPrefab,
                 poolController
             );
 

@@ -1,24 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Services.Audio
+namespace Game.Services
 {
-    public enum AudioClipName
-    {
-        Click
-    }
-
     public class AudioManager : MonoBehaviour
     {
-        [System.Serializable]
-        private class Sound
-        {
-            public AudioClipName AudioClipName;
-            public AudioClip AudioClip;
-        }
-
         [SerializeField]
-        private List<Sound> sounds;
+        private List<AudioSound> sounds;
 
         private static AudioController audioController;
         private static IAudioController iac;
@@ -38,17 +26,17 @@ namespace Game.Services.Audio
             iac?.Dispose();
         }
 
-        public static void SoundEnabled(bool value)
+        public void SoundEnabled(bool value)
         {
             iac.SoundEnabled = value;
         }
 
-        public static bool IsSoundEnabled()
+        public bool IsSoundEnabled()
         {
             return iac == null || iac.SoundEnabled;
         }
 
-        public static void PlayClip2D(AudioClip clip)
+        public void PlayClip2D(AudioClip clip)
         {
             iap.PlayAudioClip2D(clip);
         }

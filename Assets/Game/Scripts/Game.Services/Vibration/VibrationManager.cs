@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Services.Vibration
+namespace Game.Services
 {
     public class VibrationManager : MonoBehaviour
     {

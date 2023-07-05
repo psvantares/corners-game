@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     public class Cell : MonoBehaviour
     {

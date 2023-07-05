@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Game.Services.Audio
+namespace Game.Services
 {
     public interface IAudioController : IDisposable
     {

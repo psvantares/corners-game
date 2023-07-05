@@ -5,7 +5,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace Game.Services.Audio
+namespace Game.Services
 {
     public class AudioController : IAudioController, IAudioPlayer, IMusicPlayer
     {

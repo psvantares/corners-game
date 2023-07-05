@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     public class BoardManager : MonoBehaviour
     {
@@ -13,15 +13,15 @@ namespace Game.Gameplay.Board
 
         [Space]
         [SerializeField]
+        private BoardProvider boardProvider;
+
+        [SerializeField]
         private BoardInput boardInput;
 
         [SerializeField]
         private BoardCamera boardCamera;
 
-        private void Update()
-        {
-            boardInput.Update();
-        }
+        public BoardProvider BoardProvider => boardProvider;
 
         public void Clear()
         {

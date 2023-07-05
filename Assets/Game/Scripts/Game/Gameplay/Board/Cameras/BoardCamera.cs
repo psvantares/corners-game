@@ -1,7 +1,6 @@
-﻿using Game.Gameplay.Data;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     public class BoardCamera : MonoBehaviour
     {
@@ -30,9 +29,10 @@ namespace Game.Gameplay.Board
 
         private static Bounds GetBoardBounds(Vector2Int boardSize)
         {
+            const float step = 1.05f;
             var bounds = new Bounds();
-            var offset = 0.75f * Constants.CellStep * Vector2.one;
-            var max = new Vector2(Constants.CellStep * (boardSize.y - 1), Constants.CellStep * (boardSize.x - 1)) + offset;
+            var offset = 0.75f * step * Vector2.one;
+            var max = new Vector2(step * (boardSize.y - 1), step * (boardSize.x - 1)) + offset;
             var min = -offset;
 
             bounds.Encapsulate(max);

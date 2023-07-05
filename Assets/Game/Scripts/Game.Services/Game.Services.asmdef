@@ -1,8 +1,10 @@
 {
     "name": "Game.Services",
-    "rootNamespace": "Game.Services",
+    "rootNamespace": "",
     "references": [
-        "GUID:c4ec7acec9c1da64f8e93f6be315fbce"
+        "GUID:74c33a684ec16a343b039ab7a087af55",
+        "GUID:4e44281edf8772e4f94a8f02b581d23a",
+        "GUID:6e750e65f3d34704aa6d3b84a2509fa0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

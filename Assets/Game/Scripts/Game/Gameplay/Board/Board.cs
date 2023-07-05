@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Data;
-using Game.Gameplay.Pool;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Game.Gameplay.Board
+namespace Game.Gameplay
 {
     public class Board : IDisposable
     {

@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Fusion;
-using Game.Core;
 using Game.Data;
-using Game.Services;
 using UnityEngine;
 
 namespace Game.Menu
@@ -20,7 +18,6 @@ namespace Game.Menu
 
         [SerializeField]
         private NetworkRunner networkRunnerPrefab;
-
 
         private readonly List<IDisposable> disposables = new();
 

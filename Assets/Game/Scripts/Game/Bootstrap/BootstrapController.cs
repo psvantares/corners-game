@@ -37,10 +37,12 @@ namespace Game.Bootstrap
         {
             ServiceLocator.Initialize();
 
+            var loaderManager = Object.FindObjectOfType<LoaderManager>();
             var audioManager = Object.FindObjectOfType<AudioManager>();
             var vibrationManager = Object.FindObjectOfType<VibrationManager>();
             var themeManager = Object.FindObjectOfType<ThemeManager>();
 
+            ServiceLocator.Instance.Register(new LoaderService(loaderManager));
             ServiceLocator.Instance.Register(new AudioService(audioManager));
             ServiceLocator.Instance.Register(new VibrationService(vibrationManager));
             ServiceLocator.Instance.Register(new ThemeService(themeManager));

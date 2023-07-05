@@ -12,6 +12,7 @@ namespace Game.Menu
     public class MenuController : IDisposable
     {
         private readonly IGameModel gameModel;
+        private readonly LoaderService loaderService;
         private readonly MenuViewManager menuViewManager;
         private readonly PlayerData playerDataPrefab;
         private readonly NetworkRunner networkRunnerPrefab;
@@ -32,6 +33,7 @@ namespace Game.Menu
             this.networkRunnerPrefab = networkRunnerPrefab;
 
             gameModel = ServiceLocator.Instance.GetService<GameService>().GameModel;
+            loaderService = ServiceLocator.Instance.GetService<LoaderService>();
 
             Initialize();
         }
@@ -61,6 +63,8 @@ namespace Game.Menu
 
         private async void StartGame(GameMode mode, string roomName, string sceneName)
         {
+            loaderService.Show();
+
             runnerInstance = Object.FindObjectOfType<NetworkRunner>();
 
             if (runnerInstance == null)
@@ -81,6 +85,8 @@ namespace Game.Menu
             await runnerInstance.StartGame(startGameArgs);
 
             runnerInstance.SetActiveScene(sceneName);
+
+            loaderService.Hide();
         }
 
         // Events

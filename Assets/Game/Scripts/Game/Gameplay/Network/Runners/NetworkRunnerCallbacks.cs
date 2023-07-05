@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
-using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Game.Gameplay
 {
@@ -28,7 +28,7 @@ namespace Game.Gameplay
 
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
         {
-            Debug.LogError("The client is disconnected");
+            SceneManager.LoadScene("Menu");
         }
 
         public void OnConnectedToServer(NetworkRunner runner)

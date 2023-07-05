@@ -28,7 +28,7 @@ namespace Game.Gameplay
         {
             disposable.Clear();
 
-            gameplayView.HomeEvent.Subscribe(OnShowMenu).AddTo(disposable);
+            gameplayView.MenuEvent.Subscribe(OnShowMenu).AddTo(disposable);
         }
 
         private void OnDisable()

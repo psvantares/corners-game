@@ -8,7 +8,7 @@ namespace Game.Gameplay
         private PlayerView playerView;
 
         [Networked(OnChanged = nameof(OnNickNameChanged))]
-        private NetworkString<_16> NickName { get; set; }
+        public NetworkString<_16> NickName { get; private set; }
 
         public override void Spawned()
         {

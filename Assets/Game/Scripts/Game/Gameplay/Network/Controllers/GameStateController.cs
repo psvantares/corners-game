@@ -36,7 +36,6 @@ namespace Game.Gameplay
         private NetworkLinkedList<NetworkBehaviourId> PlayerDataNetworkedIds => default;
 
         public bool GameIsRunning => CurrentGameState == GameState.Running;
-        public int PlayersCount => PlayerDataNetworkedIds.Count;
 
         public override void Spawned()
         {
@@ -109,7 +108,10 @@ namespace Game.Gameplay
         {
             var source = Timer.RemainingTime(Runner);
             var tick = source ?? 0;
-            EventBus.RemainingTime.OnNext(tick);
+            var time = TimeSpan.FromSeconds(tick);
+            var timeText = time.ToString(@"hh\:mm\:ss");
+
+            EventBus.RemainingTime.OnNext(timeText);
         }
 
         private void UpdateEndingDisplay()
@@ -119,49 +121,20 @@ namespace Game.Gameplay
                 return;
             }
 
+            var source = Timer.RemainingTime(Runner);
+            var tick = source ?? 0;
+            var time = TimeSpan.FromSeconds(tick);
+            var timeText = time.ToString(@"hh\:mm\:ss");
+            var text = $"{playerData.NickName}: disconnecting in {timeText}";
+
+            EventBus.GameStateEnding.OnNext(text);
+
             if (Timer.ExpiredOrNotRunning(Runner) == false)
             {
                 return;
             }
 
             Runner.Shutdown();
-        }
-
-        // Called from the ShipController when it hits an asteroid
-        public void CheckIfGameHasEnded()
-        {
-            // if (Object.HasStateAuthority == false) return;
-            //
-            // int playersAlive = 0;
-            //
-            // for (int i = 0; i < PlayerDataNetworkedIds.Count; i++)
-            // {
-            //     if (Runner.TryFindBehaviour(PlayerDataNetworkedIds[i], out NetworkPlayerData playerDataNetworkedComponent) == false)
-            //     {
-            //         PlayerDataNetworkedIds.Remove(PlayerDataNetworkedIds[i]);
-            //         i--;
-            //         continue;
-            //     }
-            //
-            //     if (playerDataNetworkedComponent.Lives > 0) playersAlive++;
-            // }
-            //
-            // // If more than 1 player is left alive, the game continues.
-            // // If only 1 player is left, the game ends immediately.
-            // if (playersAlive > 1) return;
-            //
-            // foreach (var playerDataNetworkedId in PlayerDataNetworkedIds)
-            // {
-            //     if (Runner.TryFindBehaviour(playerDataNetworkedId,
-            //             out PlayerDataNetworked playerDataNetworkedComponent) ==
-            //         false) continue;
-            //
-            //     if (playerDataNetworkedComponent.Lives > 0 == false) continue;
-            //
-            //     Winner = playerDataNetworkedId;
-            // }
-            //
-            // GameHasEnded();
         }
 
         private void GameHasEnded()
@@ -172,16 +145,10 @@ namespace Game.Gameplay
 
         // RPC
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void RPC_CheckIfGameHasEnded()
-        {
-            CheckIfGameHasEnded();
-        }
-
         [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
         private void RPC_SpawnReadyPlayers()
         {
-            FindObjectOfType<PlayerSpawner>().SpawnSpaceship(Runner.LocalPlayer);
+            FindObjectOfType<PlayerSpawner>().SpawnPlayer(Runner.LocalPlayer);
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

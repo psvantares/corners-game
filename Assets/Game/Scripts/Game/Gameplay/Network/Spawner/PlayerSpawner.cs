@@ -14,7 +14,7 @@ namespace Game.Gameplay
         {
             if (FindObjectOfType<GameStateController>().GameIsRunning)
             {
-                SpawnSpaceship(Runner.LocalPlayer);
+                SpawnPlayer(Runner.LocalPlayer);
             }
         }
 
@@ -23,7 +23,7 @@ namespace Game.Gameplay
             this.gameStateController = gameStateController;
         }
 
-        public void SpawnSpaceship(PlayerRef player)
+        public void SpawnPlayer(PlayerRef player)
         {
             var playerObject = Runner.Spawn(networkPlayerPrefab, Vector3.zero, Quaternion.identity, player);
             Runner.SetPlayerObject(player, playerObject);

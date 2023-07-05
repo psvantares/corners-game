@@ -12,21 +12,25 @@ namespace Game.Gameplay
         [SerializeField]
         private TMP_Text timerText;
 
+        [SerializeField]
+        private TMP_Text disconnectText;
+
         [Header("BUTTONS")]
         [SerializeField]
         private SmartButton homeButton;
 
         private readonly CompositeDisposable disposable = new();
-        private readonly ISubject<Unit> homeEvent = new Subject<Unit>();
+        private readonly ISubject<Unit> menuEvent = new Subject<Unit>();
 
-        public IObservable<Unit> HomeEvent => homeEvent;
+        public IObservable<Unit> MenuEvent => menuEvent;
 
         private void OnEnable()
         {
             disposable.Clear();
 
-            homeButton.ClickedEvent.Subscribe(OnHome).AddTo(disposable);
-            EventBus.RemainingTimeEvent.Subscribe(DisplayTime).AddTo(disposable);
+            homeButton.ClickedEvent.Subscribe(OnMenu).AddTo(disposable);
+            EventBus.RemainingTimeEvent.Subscribe(OnRemaining).AddTo(disposable);
+            EventBus.GameStateEndingEvent.Subscribe(OnDisconnect).AddTo(disposable);
         }
 
         private void OnDisable()
@@ -34,17 +38,21 @@ namespace Game.Gameplay
             disposable.Clear();
         }
 
-        private void DisplayTime(float tick)
-        {
-            var time = TimeSpan.FromSeconds(tick);
-            timerText.text = time.ToString(@"hh\:mm\:ss");
-        }
-
         // Events
 
-        private void OnHome(Unit unit)
+        private void OnMenu(Unit unit)
         {
-            homeEvent?.OnNext(unit);
+            menuEvent?.OnNext(unit);
+        }
+
+        private void OnRemaining(string time)
+        {
+            timerText.text = time;
+        }
+
+        private void OnDisconnect(string text)
+        {
+            disconnectText.text = text;
         }
     }
 }

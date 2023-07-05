@@ -1207,8 +1207,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardObject: {fileID: 8945907300101351667}
   backgroundTransform: {fileID: 4372836770727899051}
-  boardProvider: {fileID: 2059077682}
-  boardInput: {fileID: 8335033674076782502}
   boardCamera: {fileID: 3881605986212296906}
 --- !u!114 &3881605986212296906
 MonoBehaviour:
@@ -1238,30 +1236,6 @@ Transform:
   m_Father: {fileID: 7478432702312587296}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5389739516316704816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5799190276212702482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 1
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2561
-  NetworkGuid:
-    RawGuidValue: 80560645cc2a40f4a457a26398e8e61f
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 8335033674076782502}
-  SimulationBehaviours: []
 --- !u!1 &5439966619116990893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,7 +1262,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1119926441451984120}
   - component: {fileID: 8335033674076782502}
-  - component: {fileID: 5389739516316704816}
   m_Layer: 0
   m_Name: BoardInput
   m_TagString: Untagged
@@ -1585,7 +1558,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 479b4ab9945b415a86b74a2cda8025f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
   boardCamera: {fileID: 6711880450791135506}
 --- !u!4 &8688692429508265466
 Transform:

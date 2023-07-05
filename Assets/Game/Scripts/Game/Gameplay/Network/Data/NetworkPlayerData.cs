@@ -1,7 +1,5 @@
 ﻿using Fusion;
-using Game.Core;
 using Game.Data;
-using Game.Gameplay;
 
 namespace Game.Gameplay
 {
@@ -12,8 +10,6 @@ namespace Game.Gameplay
         [Networked(OnChanged = nameof(OnNickNameChanged))]
         private NetworkString<_16> NickName { get; set; }
 
-        public bool IsPlayer => Runner.IsPlayer;
-
         public override void Spawned()
         {
             if (Object.HasStateAuthority)
@@ -22,7 +18,7 @@ namespace Game.Gameplay
             }
 
             playerView = FindObjectOfType<PlayerView>();
-            playerView.AddEntry(Object.InputAuthority, this);
+            playerView.AddEntry(Object.InputAuthority, Object.HasStateAuthority, this);
         }
 
         public override void Despawned(NetworkRunner runner, bool hasState)

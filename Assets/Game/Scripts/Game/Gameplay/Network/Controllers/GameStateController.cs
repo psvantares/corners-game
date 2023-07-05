@@ -36,6 +36,7 @@ namespace Game.Gameplay
         private NetworkLinkedList<NetworkBehaviourId> PlayerDataNetworkedIds => default;
 
         public bool GameIsRunning => CurrentGameState == GameState.Running;
+        public int PlayersCount => PlayerDataNetworkedIds.Count;
 
         public override void Spawned()
         {
@@ -104,12 +105,6 @@ namespace Game.Gameplay
             Timer = TickTimer.CreateFromSeconds(Runner, gameSessionLength);
         }
 
-        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-        private void RPC_SpawnReadyPlayers()
-        {
-            FindObjectOfType<PlayerSpawner>().SpawnSpaceship(Runner.LocalPlayer);
-        }
-
         private void UpdateRunningDisplay()
         {
             var source = Timer.RemainingTime(Runner);
@@ -130,12 +125,6 @@ namespace Game.Gameplay
             }
 
             Runner.Shutdown();
-        }
-
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void RPC_CheckIfGameHasEnded()
-        {
-            CheckIfGameHasEnded();
         }
 
         // Called from the ShipController when it hits an asteroid
@@ -179,6 +168,20 @@ namespace Game.Gameplay
         {
             Timer = TickTimer.CreateFromSeconds(Runner, endDelay);
             CurrentGameState = GameState.Ending;
+        }
+
+        // RPC
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void RPC_CheckIfGameHasEnded()
+        {
+            CheckIfGameHasEnded();
+        }
+
+        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
+        private void RPC_SpawnReadyPlayers()
+        {
+            FindObjectOfType<PlayerSpawner>().SpawnSpaceship(Runner.LocalPlayer);
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

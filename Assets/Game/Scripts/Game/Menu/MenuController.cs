@@ -57,8 +57,6 @@ namespace Game.Menu
             {
                 playerData = Object.Instantiate(playerDataPrefab);
             }
-
-            playerData.SetNickName("neo");
         }
 
         private async void StartGame(GameMode mode, string roomName, string sceneName)

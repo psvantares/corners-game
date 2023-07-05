@@ -15,6 +15,7 @@ namespace Game.Gameplay
         private List<CellHighlight> cellsHighlight;
         private PlayerType activePlayer;
 
+        private readonly CompositeDisposable disposable = new();
         private readonly ISubject<PlayerType> playerChangedEvent = new Subject<PlayerType>();
         private readonly ISubject<PlayerType> playerWinEvent = new Subject<PlayerType>();
 
@@ -73,12 +74,12 @@ namespace Game.Gameplay
 
         private void Subscribes()
         {
-            BoardInput.CellSelected += OnCellSelected;
+            BoardInput.CellSelectedEvent.Subscribe(OnCellSelected).AddTo(disposable);
         }
 
         private void Unsubscribes()
         {
-            BoardInput.CellSelected -= OnCellSelected;
+            disposable.Clear();
         }
 
         private void ShowHighlight(IReadOnlyList<Cell> cells)

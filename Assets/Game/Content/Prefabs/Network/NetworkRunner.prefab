@@ -57,5 +57,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9211efa5efbf4e0d9169ffbf92df63cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkPlayer:
-    RawGuidValue: 389ccde11db442d44ac4c4ad1e9ed602

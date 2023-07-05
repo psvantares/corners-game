@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Fusion;
 using Game.Core;
 using TMPro;
@@ -19,7 +17,7 @@ namespace Game.Gameplay
         private readonly Dictionary<PlayerRef, TMP_Text> playerEntries = new();
         private readonly Dictionary<PlayerRef, string> playerNickNames = new();
 
-        public void AddEntry(PlayerRef playerRef, NetworkPlayerData networkPlayerData)
+        public void AddEntry(PlayerRef playerRef, bool hasStateAuthority, NetworkPlayerData networkPlayerData)
         {
             if (playerEntries.ContainsKey(playerRef))
             {
@@ -31,12 +29,11 @@ namespace Game.Gameplay
                 return;
             }
 
-            var isLocalPlayer = networkPlayerData.IsPlayer;
-            var parent = isLocalPlayer ? nodes[0] : nodes[1];
+            var parent = hasStateAuthority ? nodes[0] : nodes[1];
             var entry = Instantiate(playerEntryPrefab, parent);
 
             entry.transform.localScale = Vector3.one;
-            entry.alignment = isLocalPlayer ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
+            entry.alignment = hasStateAuthority ? TextAlignmentOptions.Left : TextAlignmentOptions.Right;
 
             playerNickNames.Add(playerRef, string.Empty);
             playerEntries.Add(playerRef, entry);

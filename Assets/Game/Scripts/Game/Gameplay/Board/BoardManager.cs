@@ -13,15 +13,7 @@ namespace Game.Gameplay
 
         [Space]
         [SerializeField]
-        private BoardProvider boardProvider;
-
-        [SerializeField]
-        private BoardInput boardInput;
-
-        [SerializeField]
         private BoardCamera boardCamera;
-
-        public BoardProvider BoardProvider => boardProvider;
 
         public void Clear()
         {

@@ -8,16 +8,6 @@ namespace Game.Gameplay
 {
     public class NetworkRunnerCallbacks : SimulationBehaviour, INetworkRunnerCallbacks
     {
-        [SerializeField]
-        private NetworkPrefabRef networkPlayer;
-
-        private bool mouseButton0;
-
-        private void Update()
-        {
-            mouseButton0 = mouseButton0 || Input.GetMouseButton(0);
-        }
-
         // Fusion callbacks
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -30,17 +20,6 @@ namespace Game.Gameplay
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
-            var data = new NetworkInputData();
-
-            if (mouseButton0)
-            {
-                data.Buttons |= NetworkInputData.MouseButton1;
-            }
-
-            data.Position = Input.mousePosition;
-            mouseButton0 = false;
-
-            input.Set(data);
         }
 
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)

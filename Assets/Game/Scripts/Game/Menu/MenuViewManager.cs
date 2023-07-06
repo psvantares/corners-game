@@ -33,11 +33,14 @@ namespace Game.Menu
         public IObservable<Unit> StartGameEvent => startGameEvent;
         public IObservable<Unit> HomeEvent => homeEvent;
 
+        public PlayView PlayView => playView;
+
         private void OnEnable()
         {
             disposable.Clear();
 
             navigationView.NavigationEvent.Subscribe(OnNavigation).AddTo(disposable);
+            playView.JoinGameEvent.Subscribe(OnJoinGame).AddTo(disposable);
             playView.StartGameEvent.Subscribe(OnStartGame).AddTo(disposable);
             playView.GameplayModeEvent.Subscribe(OnGameplayMode).AddTo(disposable);
             playView.DeckEvent.Subscribe(OnDeck).AddTo(disposable);
@@ -69,6 +72,10 @@ namespace Game.Menu
             marketView.SetActive(navigationType);
             profileView.SetActive(navigationType);
             settingsView.SetActive(navigationType);
+        }
+
+        private void OnJoinGame(Unit unit)
+        {
         }
 
         private void OnStartGame(Unit unit)

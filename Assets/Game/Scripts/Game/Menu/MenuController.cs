@@ -21,6 +21,8 @@ namespace Game.Menu
 
         private NetworkRunner runnerInstance;
 
+        private string roomName;
+
         public MenuController
         (
             MenuViewManager menuViewManager,
@@ -59,6 +61,13 @@ namespace Game.Menu
             {
                 playerData = Object.Instantiate(playerDataPrefab);
             }
+
+            if (!string.IsNullOrEmpty(menuViewManager.PlayView.NickName))
+            {
+                playerData.SetNickName(menuViewManager.PlayView.NickName);
+            }
+
+            roomName = !string.IsNullOrEmpty(menuViewManager.PlayView.RoomName) ? menuViewManager.PlayView.RoomName : "DEFAULT";
         }
 
         private async void StartGame(GameMode mode, string roomName, string sceneName)
@@ -94,7 +103,7 @@ namespace Game.Menu
         private void OnStartGame(Unit unit)
         {
             StartPlayerData();
-            StartGame(gameModel.GameplayMode == GameplayMode.Network ? GameMode.Shared : GameMode.Single, "default", "Gameplay");
+            StartGame(gameModel.GameplayMode == GameplayMode.Network ? GameMode.Shared : GameMode.Single, roomName, "Gameplay");
         }
 
         private void OnHome(Unit unit)

@@ -1,6 +1,7 @@
 using System;
 using Game.Core;
 using Game.Data;
+using TMPro;
 using UniRx;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ namespace Game.Menu
     public class PlayView : ViewBase
     {
         [Header("BUTTONS")]
+        [SerializeField]
+        private SmartButton joinGameButton;
+
         [SerializeField]
         private SmartButton startGameButton;
 
@@ -39,21 +43,34 @@ namespace Game.Menu
         [SerializeField]
         private SmartToggle boardVerticalHorizontalToggle;
 
+        [Header("INPUTS")]
+        [SerializeField]
+        private TMP_InputField nickNameInput;
+
+        [SerializeField]
+        private TMP_InputField roomNameInput;
+
         private readonly CompositeDisposable disposable = new();
         private readonly ISubject<BoardDeckType> deckEvent = new Subject<BoardDeckType>();
         private readonly ISubject<GameplayMode> gameplayModeEvent = new Subject<GameplayMode>();
         private readonly ISubject<BoardMode> boarModeEvent = new Subject<BoardMode>();
+        private readonly ISubject<Unit> joinGameEvent = new Subject<Unit>();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
 
         public IObservable<BoardDeckType> DeckEvent => deckEvent;
         public IObservable<GameplayMode> GameplayModeEvent => gameplayModeEvent;
         public IObservable<BoardMode> BoarModeEvent => boarModeEvent;
+        public IObservable<Unit> JoinGameEvent => joinGameEvent;
         public IObservable<Unit> StartGameEvent => startGameEvent;
+
+        public string NickName => nickNameInput.text;
+        public string RoomName => roomNameInput.text;
 
         public void OnEnable()
         {
             disposable.Clear();
 
+            joinGameButton.ClickedEvent.Subscribe(OnJoinGame).AddTo(disposable);
             startGameButton.ClickedEvent.Subscribe(OnStartGame).AddTo(disposable);
 
             botToggle.ClickedEvent.Subscribe(_ => OnGameplayMode(GameplayMode.Bot)).AddTo(disposable);
@@ -88,6 +105,11 @@ namespace Game.Menu
         private void OnBoardMode(BoardMode boardMode)
         {
             boarModeEvent?.OnNext(boardMode);
+        }
+
+        private void OnJoinGame(Unit unit)
+        {
+            joinGameEvent?.OnNext(unit);
         }
 
         private void OnStartGame(Unit unit)

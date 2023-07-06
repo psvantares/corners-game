@@ -34,7 +34,7 @@ namespace Game.Data
             return nickName;
         }
 
-        private static string GetRandomNickName()
+        public static string GetRandomNickName()
         {
             var playerNumber = Random.Range(0, 9999);
             return $"Player {playerNumber:0000}";

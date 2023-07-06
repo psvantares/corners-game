@@ -301,6 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b10b3b7b20224b33a4dd6f25a1dcf0a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewManager: {fileID: 1345914941}
   boardManager: {fileID: 3672325620425992306}
   boardProvider: {fileID: 2059077682}
   boardAssets: {fileID: 11400000, guid: 25ccb61f0b0b049428f06e5409fa4392, type: 2}

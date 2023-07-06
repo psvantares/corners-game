@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Game.Data;
 using UniRx;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Game.Gameplay
 {
     public class BoardController : IDisposable
     {
+        private readonly NetworkGameController networkGameController;
+
         private Board board;
         private BotGame bot;
 
@@ -16,10 +20,8 @@ namespace Game.Gameplay
         private PlayerType activePlayer;
 
         private readonly CompositeDisposable disposable = new();
-        private readonly ISubject<PlayerType> playerChangedEvent = new Subject<PlayerType>();
         private readonly ISubject<PlayerType> playerWinEvent = new Subject<PlayerType>();
 
-        public IObservable<PlayerType> PlayerChangedEvent => playerChangedEvent;
         public IObservable<PlayerType> PlayerWinEvent => playerWinEvent;
 
         public BoardController(BoardContext context)
@@ -28,8 +30,10 @@ namespace Game.Gameplay
             InitializeBot(context);
             InitializeHighlight(context);
 
+            networkGameController = Object.FindObjectOfType<NetworkGameController>();
+
+            SetActivePlayer(networkGameController.CurrentPlayerType);
             Subscribes();
-            SetActivePlayer(PlayerType.White);
         }
 
         public void Dispose()
@@ -139,7 +143,7 @@ namespace Game.Gameplay
 
                     if (IsAiTurn())
                     {
-                        MakeAiMove();
+                        MakeAiMove().Forget();
                     }
                 }
                 else
@@ -150,8 +154,9 @@ namespace Game.Gameplay
             }
         }
 
-        private void MakeAiMove()
+        private async UniTask MakeAiMove()
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
             MakeMove(bot.CalcTurn());
             SwitchPlayer();
         }
@@ -180,7 +185,7 @@ namespace Game.Gameplay
         private void SetActivePlayer(PlayerType playerType)
         {
             activePlayer = playerType;
-            playerChangedEvent?.OnNext(activePlayer);
+            networkGameController.RPC_SwitchActivePlayer(activePlayer);
         }
 
         private bool IsWinner(PlayerType player)

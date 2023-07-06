@@ -94,7 +94,7 @@ namespace Game.Menu
         private void OnStartGame(Unit unit)
         {
             StartPlayerData();
-            StartGame(gameModel.GameplayMode == GameplayMode.Network ? GameMode.Single : GameMode.Shared, "default", "Gameplay");
+            StartGame(gameModel.GameplayMode == GameplayMode.Network ? GameMode.Shared : GameMode.Single, "default", "Gameplay");
         }
 
         private void OnHome(Unit unit)

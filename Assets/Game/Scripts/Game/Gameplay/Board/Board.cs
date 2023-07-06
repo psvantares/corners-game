@@ -84,13 +84,6 @@ namespace Game.Gameplay
             return cells.FirstOrDefault(c => c.Position == position);
         }
 
-        public Cell GetRandomStartCell(PlayerType playerType)
-        {
-            return GetCell(playerType == PlayerType.Black
-                ? config.BlackPosition[Random.Range(0, config.BlackPosition.Count)]
-                : config.WhitePosition[Random.Range(0, config.WhitePosition.Count)]);
-        }
-
         public List<Cell> GetEmptyStartPositions(PlayerType playerType)
         {
             var result = new List<Cell>();

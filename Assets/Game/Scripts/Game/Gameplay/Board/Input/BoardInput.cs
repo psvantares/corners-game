@@ -10,8 +10,6 @@ namespace Game.Gameplay
         private Camera boardCamera;
 
         private static readonly ISubject<Vector2Int> CellSelected = new Subject<Vector2Int>();
-
-        public Camera BoardCamera => boardCamera;
         public static IObservable<Vector2Int> CellSelectedEvent => CellSelected;
 
         public void Update()

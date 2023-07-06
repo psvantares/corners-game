@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Core;
-using Game.Services;
 using UnityEngine;
 
 namespace Game.Gameplay
@@ -9,6 +7,9 @@ namespace Game.Gameplay
     public class GameplayEntry : MonoBehaviour
     {
         [Header("MANAGERS")]
+        [SerializeField]
+        private GameplayViewManager viewManager;
+
         [SerializeField]
         private BoardManager boardManager;
 
@@ -20,16 +21,21 @@ namespace Game.Gameplay
         [SerializeField]
         private BoardAssets boardAssets;
 
+        private PoolController poolController;
         private readonly List<IDisposable> disposables = new();
 
         private void Awake()
         {
-            var poolController = new PoolController(boardAssets, boardProvider);
+            poolController = new PoolController(boardAssets, boardProvider);
+        }
+
+        public void Initialize()
+        {
             var gameplayController = new GameplayController
             (
+                viewManager,
                 boardManager,
                 boardAssets,
-                boardProvider,
                 poolController
             );
 

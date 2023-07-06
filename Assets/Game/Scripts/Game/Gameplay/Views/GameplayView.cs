@@ -15,6 +15,9 @@ namespace Game.Gameplay
         [SerializeField]
         private TMP_Text disconnectText;
 
+        [SerializeField]
+        private TMP_Text runText;
+
         [Header("BUTTONS")]
         [SerializeField]
         private SmartButton homeButton;
@@ -29,8 +32,6 @@ namespace Game.Gameplay
             disposable.Clear();
 
             homeButton.ClickedEvent.Subscribe(OnMenu).AddTo(disposable);
-            EventBus.RemainingTimeEvent.Subscribe(OnRemaining).AddTo(disposable);
-            EventBus.GameStateEndingEvent.Subscribe(OnDisconnect).AddTo(disposable);
         }
 
         private void OnDisable()
@@ -38,21 +39,26 @@ namespace Game.Gameplay
             disposable.Clear();
         }
 
+        public void RemainingText(string time)
+        {
+            timerText.text = time;
+        }
+
+        public void DisconnectText(string text)
+        {
+            disconnectText.text = text;
+        }
+
+        public void RunText(string text)
+        {
+            runText.text = text.ToUpper();
+        }
+
         // Events
 
         private void OnMenu(Unit unit)
         {
             menuEvent?.OnNext(unit);
-        }
-
-        private void OnRemaining(string time)
-        {
-            timerText.text = time;
-        }
-
-        private void OnDisconnect(string text)
-        {
-            disconnectText.text = text;
         }
     }
 }

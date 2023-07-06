@@ -1,11 +1,11 @@
 ﻿using System;
 using Fusion;
-using Game.Core;
+using Game.Data;
 using UnityEngine;
 
 namespace Game.Gameplay
 {
-    public class GameStateController : NetworkBehaviour
+    public class NetworkGameController : NetworkBehaviour
     {
         private enum GameState
         {
@@ -27,6 +27,9 @@ namespace Game.Gameplay
         private TickTimer Timer { get; set; }
 
         [Networked]
+        public PlayerType CurrentPlayerType { get; set; }
+
+        [Networked]
         private GameState CurrentGameState { get; set; }
 
         [Networked]
@@ -34,6 +37,8 @@ namespace Game.Gameplay
 
         [Networked, Capacity(2)]
         private NetworkLinkedList<NetworkBehaviourId> PlayerDataNetworkedIds => default;
+
+        private GameplayView gameplayView;
 
         public bool GameIsRunning => CurrentGameState == GameState.Running;
 
@@ -56,6 +61,8 @@ namespace Game.Gameplay
                     RPC_TrackNewPlayer(playerObject.GetComponent<NetworkPlayerData>().Id);
                 }
             }
+
+            RPC_SwitchActivePlayer(PlayerType.White);
 
             CurrentGameState = GameState.Starting;
             Timer = TickTimer.CreateFromSeconds(Runner, startDelay);
@@ -96,8 +103,6 @@ namespace Game.Gameplay
                 return;
             }
 
-            FindObjectOfType<PlayerSpawner>().StartPlayerSpawner(this);
-
             RPC_SpawnReadyPlayers();
 
             CurrentGameState = GameState.Running;
@@ -111,7 +116,12 @@ namespace Game.Gameplay
             var time = TimeSpan.FromSeconds(tick);
             var timeText = time.ToString(@"hh\:mm\:ss");
 
-            EventBus.RemainingTime.OnNext(timeText);
+            if (!gameplayView)
+            {
+                gameplayView = FindObjectOfType<GameplayView>();
+            }
+
+            gameplayView.RemainingText(timeText);
         }
 
         private void UpdateEndingDisplay()
@@ -127,7 +137,12 @@ namespace Game.Gameplay
             var timeText = time.ToString(@"hh\:mm\:ss");
             var text = $"{playerData.NickName}: disconnecting in {timeText}";
 
-            EventBus.GameStateEnding.OnNext(text);
+            if (!gameplayView)
+            {
+                gameplayView = FindObjectOfType<GameplayView>();
+            }
+
+            gameplayView.DisconnectText(text);
 
             if (Timer.ExpiredOrNotRunning(Runner) == false)
             {
@@ -145,16 +160,29 @@ namespace Game.Gameplay
 
         // RPC
 
-        [Rpc(sources: RpcSources.StateAuthority, targets: RpcTargets.All)]
-        private void RPC_SpawnReadyPlayers()
-        {
-            FindObjectOfType<PlayerSpawner>().SpawnPlayer(Runner.LocalPlayer);
-        }
-
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
         public void RPC_TrackNewPlayer(NetworkBehaviourId playerDataNetworkedId)
         {
             PlayerDataNetworkedIds.Add(playerDataNetworkedId);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_SwitchActivePlayer(PlayerType playerType)
+        {
+            CurrentPlayerType = playerType;
+
+            if (!gameplayView)
+            {
+                gameplayView = FindObjectOfType<GameplayView>();
+            }
+
+            gameplayView.RunText(playerType.ToString());
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        private void RPC_SpawnReadyPlayers()
+        {
+            FindObjectOfType<NetworkPlayerSpawner>().SpawnPlayer(Runner.LocalPlayer);
         }
     }
 }

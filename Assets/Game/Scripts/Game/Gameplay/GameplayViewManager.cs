@@ -1,4 +1,5 @@
 ﻿using Fusion;
+using Game.Data;
 using UniRx;
 using UnityEngine;
 
@@ -29,11 +30,18 @@ namespace Game.Gameplay
             disposable.Clear();
 
             gameplayView.MenuEvent.Subscribe(OnShowMenu).AddTo(disposable);
+            completeView.ContinueEvent.Subscribe(OnShowMenu).AddTo(disposable);
         }
 
         private void OnDisable()
         {
             disposable.Clear();
+        }
+
+        public void ShowComplete(PlayerType playerType)
+        {
+            completeView.SetTitleText(playerType);
+            completeView.SetActive(true);
         }
 
         // Events

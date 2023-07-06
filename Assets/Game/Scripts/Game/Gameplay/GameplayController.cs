@@ -1,7 +1,6 @@
 ﻿using System;
 using Game.Core;
 using Game.Data;
-using Game.Models;
 using Game.Services;
 using UniRx;
 
@@ -9,10 +8,9 @@ namespace Game.Gameplay
 {
     public class GameplayController : IDisposable
     {
-        private readonly IGameModel gameModel;
+        private readonly GameplayViewManager viewManager;
         private readonly BoardManager boardManager;
         private readonly BoardAssets assets;
-        private readonly BoardProvider provider;
         private readonly PoolController pool;
 
         private readonly CompositeDisposable disposables = new();
@@ -22,18 +20,16 @@ namespace Game.Gameplay
 
         public GameplayController
         (
+            GameplayViewManager viewManager,
             BoardManager boardManager,
             BoardAssets assets,
-            BoardProvider provider,
             PoolController pool
         )
         {
+            this.viewManager = viewManager;
             this.boardManager = boardManager;
             this.assets = assets;
-            this.provider = provider;
             this.pool = pool;
-
-            gameModel = ServiceLocator.Instance.GetService<GameService>().GameModel;
 
             Initialize();
         }
@@ -46,6 +42,7 @@ namespace Game.Gameplay
 
         private void Initialize()
         {
+            var gameModel = ServiceLocator.Instance.GetService<GameService>().GameModel;
             var config = gameModel.DeckType == BoardDeckType.Diagonal ? assets.BoardConfigDiagonal : assets.BoardConfigSquare;
             var boardContext = new BoardContext(gameModel, config, pool);
 
@@ -69,7 +66,7 @@ namespace Game.Gameplay
 
             pool.Clear();
             boardManager.Clear();
-            // viewManager.ShowWin(playerType);
+            viewManager.ShowComplete(playerType);
         }
     }
 }

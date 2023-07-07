@@ -7,8 +7,7 @@ namespace Game.Gameplay
         [SerializeField]
         private Camera boardCamera;
 
-
-        public void Setup(Vector2Int boardSize)
+        public void Setup(Vector2Int boardSize, bool isRotate)
         {
             var bounds = GetBoardBounds(boardSize);
             var width = bounds.size.x;
@@ -20,11 +19,11 @@ namespace Game.Gameplay
             var position = cameraTransform.position;
 
             cameraTransform.position = new Vector3((boardSize.x / 2f) - 0.5f, (boardSize.y / 2f) - 0.5f, position.z);
-        }
 
-        public Vector2 GetWorldPoint(Vector2 screenPoint)
-        {
-            return boardCamera.ScreenToWorldPoint(screenPoint);
+            if (isRotate)
+            {
+                boardCamera.transform.localRotation = new Quaternion(0, 0, 180, 0);
+            }
         }
 
         private static Bounds GetBoardBounds(Vector2Int boardSize)

@@ -29,7 +29,7 @@ namespace Game.Gameplay
             poolController = new PoolController(boardAssets, boardProvider);
         }
 
-        public void Initialize()
+        public void Initialize(int playerCount)
         {
             viewManager.Initialize();
 

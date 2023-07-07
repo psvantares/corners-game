@@ -20,15 +20,15 @@ namespace Game.Gameplay
             boardObject.SetActive(false);
         }
 
-        public void StartGame(BoardContext context)
+        public void StartGame(BoardContext context, bool isRotate)
         {
-            SetupCamera(context.Config.BoardSize);
+            SetupCamera(context.Config.BoardSize, isRotate);
             boardObject.SetActive(true);
         }
 
-        private void SetupCamera(Vector2Int boardSize)
+        private void SetupCamera(Vector2Int boardSize, bool isRotate)
         {
-            boardCamera.Setup(boardSize);
+            boardCamera.Setup(boardSize, isRotate);
 
             var cameraPosition = boardCamera.transform.position;
             backgroundTransform.localPosition = new Vector3(cameraPosition.x, cameraPosition.y, 0);

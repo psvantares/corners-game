@@ -4,14 +4,12 @@ using Cysharp.Threading.Tasks;
 using Game.Data;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Game.Gameplay
 {
     public class BoardController : IDisposable
     {
-        private readonly NetworkGameController networkGameController;
-
+        private readonly BoardContext context;
         private Board board;
         private BotGame bot;
 
@@ -28,14 +26,15 @@ namespace Game.Gameplay
 
         public BoardController(BoardContext context)
         {
+            this.context = context;
+
             InitializeBoard(context);
             InitializeBot(context);
             InitializeHighlight(context);
 
-            networkGameController = Object.FindObjectOfType<NetworkGameController>();
-            activePlayer = networkGameController.CurrentPlayer;
+            activePlayer = context.NetworkGameController.CurrentPlayer;
 
-            selfPlayer = networkGameController.PlayerCount switch
+            selfPlayer = context.NetworkGameController.PlayerCount switch
             {
                 0 => PlayerType.White,
                 1 => PlayerType.Black,
@@ -88,7 +87,7 @@ namespace Game.Gameplay
         private void Subscribes()
         {
             BoardInput.CellSelectedEvent.Subscribe(OnCellSelected).AddTo(disposables);
-            networkGameController.SwitchPlayerEvent.Subscribe(SetNetworkActivePlayer).AddTo(disposables);
+            context.NetworkGameController.SwitchPlayerEvent.Subscribe(SetNetworkActivePlayer).AddTo(disposables);
         }
 
         private void Unsubscribes()
@@ -205,7 +204,7 @@ namespace Game.Gameplay
         private void SetLocalActivePlayer(PlayerType playerType)
         {
             activePlayer = playerType;
-            networkGameController.RPC_SwitchActivePlayer(activePlayer);
+            context.NetworkGameController.RPC_SwitchActivePlayer(activePlayer);
         }
 
         private bool IsWinner(PlayerType player)

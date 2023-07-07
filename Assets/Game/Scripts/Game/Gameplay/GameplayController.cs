@@ -3,6 +3,8 @@ using Game.Core;
 using Game.Data;
 using Game.Services;
 using UniRx;
+using Object = UnityEngine.Object;
+
 
 namespace Game.Gameplay
 {
@@ -44,11 +46,12 @@ namespace Game.Gameplay
         {
             var gameModel = ServiceLocator.Instance.GetService<GameService>().GameModel;
             var config = gameModel.DeckType == BoardDeckType.Diagonal ? assets.BoardConfigDiagonal : assets.BoardConfigSquare;
-            var boardContext = new BoardContext(gameModel, config, pool);
+            var networkGameController = Object.FindObjectOfType<NetworkGameController>();
+            var boardContext = new BoardContext(gameModel, networkGameController, config, pool);
 
             boardController = new BoardController(boardContext);
-            boardController.PlayerWinEvent.Subscribe(OnPlayerWin).AddTo(boardDisposables);
-            boardManager.StartGame(boardContext);
+            boardController.PlayerWinEvent.Subscribe(OnComplete).AddTo(boardDisposables);
+            boardManager.StartGame(boardContext, networkGameController.PlayerCount > 0);
         }
 
         private void Clear()
@@ -60,7 +63,7 @@ namespace Game.Gameplay
 
         // Events
 
-        private void OnPlayerWin(PlayerType playerType)
+        private void OnComplete(PlayerType playerType)
         {
             Clear();
 

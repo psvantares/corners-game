@@ -17,8 +17,8 @@ namespace Game.Gameplay
 
         private List<Cell> availableToMoveCells;
         private List<CellHighlight> cellsHighlight;
-        
-        private PlayerType selfPlayer;
+
+        private readonly PlayerType selfPlayer;
         private PlayerType activePlayer;
 
         private readonly CompositeDisposable disposables = new();
@@ -34,6 +34,13 @@ namespace Game.Gameplay
 
             networkGameController = Object.FindObjectOfType<NetworkGameController>();
             activePlayer = networkGameController.CurrentPlayer;
+
+            selfPlayer = networkGameController.PlayerCount switch
+            {
+                0 => PlayerType.White,
+                1 => PlayerType.Black,
+                _ => selfPlayer
+            };
 
             Subscribes();
         }
@@ -118,6 +125,11 @@ namespace Game.Gameplay
             }
 
             var checker = board.GetChecker(cell);
+
+            if (selfPlayer != activePlayer)
+            {
+                return;
+            }
 
             if (checker != null)
             {

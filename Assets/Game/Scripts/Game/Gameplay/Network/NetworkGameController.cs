@@ -44,6 +44,7 @@ namespace Game.Gameplay
         private readonly ISubject<string> disconnectEvent = new Subject<string>();
 
         public bool GameIsRunning => CurrentGameState == GameState.Running;
+        public int PlayerCount => PlayerDataNetworkedIds.Count;
 
         public IObservable<PlayerType> SwitchPlayerEvent => switchPlayerEvent;
         public IObservable<string> RemainingEvent => remainingEvent;

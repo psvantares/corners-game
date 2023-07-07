@@ -33,24 +33,21 @@ namespace Game.Gameplay
         [Networked]
         private GameState CurrentGameState { get; set; }
 
-        [Networked]
-        private NetworkBehaviourId Winner { get; set; }
-
         [Networked, Capacity(2)]
         private NetworkLinkedList<NetworkBehaviourId> PlayerDataNetworkedIds => default;
 
         private readonly ISubject<PlayerType> switchPlayerEvent = new Subject<PlayerType>();
+        private readonly ISubject<PlayerType> gameCompleteEvent = new Subject<PlayerType>();
         private readonly ISubject<NetworkCheckerData> updateCheckerPositionEvent = new Subject<NetworkCheckerData>();
         private readonly ISubject<string> remainingEvent = new Subject<string>();
-        private readonly ISubject<string> disconnectEvent = new Subject<string>();
 
         public bool GameIsRunning => CurrentGameState == GameState.Running;
         public int PlayerCount => PlayerDataNetworkedIds.Count;
 
         public IObservable<PlayerType> SwitchPlayerEvent => switchPlayerEvent;
+        public IObservable<PlayerType> GameCompleteEvent => gameCompleteEvent;
         public IObservable<NetworkCheckerData> UpdateCheckerPositionEvent => updateCheckerPositionEvent;
         public IObservable<string> RemainingEvent => remainingEvent;
-        public IObservable<string> DisconnectEvent => disconnectEvent;
 
         public override void Spawned()
         {
@@ -131,19 +128,6 @@ namespace Game.Gameplay
 
         private void UpdateEndingDisplay()
         {
-            if (Runner.TryFindBehaviour(Winner, out NetworkPlayerData playerData) == false)
-            {
-                return;
-            }
-
-            var source = Timer.RemainingTime(Runner);
-            var tick = source ?? 0;
-            var time = TimeSpan.FromSeconds(tick);
-            var timeText = time.ToString(@"hh\:mm\:ss");
-            var text = $"{playerData.NickName}: disconnecting in {timeText}";
-
-            disconnectEvent.OnNext(text);
-
             if (Timer.ExpiredOrNotRunning(Runner) == false)
             {
                 return;
@@ -183,6 +167,12 @@ namespace Game.Gameplay
         private void RPC_SpawnReadyPlayers()
         {
             FindObjectOfType<NetworkPlayerSpawner>().SpawnPlayer(Runner.LocalPlayer);
+        }
+
+        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        public void RPC_GameComplete(PlayerType playerType)
+        {
+            gameCompleteEvent.OnNext(playerType);
         }
     }
 }

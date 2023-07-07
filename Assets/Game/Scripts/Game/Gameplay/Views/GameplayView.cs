@@ -13,9 +13,6 @@ namespace Game.Gameplay
         private TMP_Text timerText;
 
         [SerializeField]
-        private TMP_Text disconnectText;
-
-        [SerializeField]
         private TMP_Text runText;
 
         [Header("BUTTONS")]
@@ -42,11 +39,6 @@ namespace Game.Gameplay
         public void RemainingText(string time)
         {
             timerText.text = time;
-        }
-
-        public void DisconnectText(string text)
-        {
-            disconnectText.text = text;
         }
 
         public void PlayerText(string text)

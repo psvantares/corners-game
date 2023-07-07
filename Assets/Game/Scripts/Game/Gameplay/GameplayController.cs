@@ -52,7 +52,7 @@ namespace Game.Gameplay
             var boardContext = new BoardContext(gameModel, networkGameController, config, pool);
 
             boardController = new BoardController(boardContext);
-            boardController.PlayerWinEvent.Subscribe(OnComplete).AddTo(boardDisposables);
+            boardController.GameCompleteEvent.Subscribe(OnComplete).AddTo(boardDisposables);
             boardManager.StartGame(boardContext, networkGameController.PlayerCount > 0);
         }
 

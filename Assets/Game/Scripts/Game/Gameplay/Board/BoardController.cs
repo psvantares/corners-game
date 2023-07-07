@@ -23,9 +23,9 @@ namespace Game.Gameplay
 
         private readonly CompositeDisposable disposables = new();
         private CancellationTokenSource cts;
-        private readonly ISubject<PlayerType> playerWinEvent = new Subject<PlayerType>();
+        private readonly ISubject<PlayerType> gameCompleteEvent = new Subject<PlayerType>();
 
-        public IObservable<PlayerType> PlayerWinEvent => playerWinEvent;
+        public IObservable<PlayerType> GameCompleteEvent => gameCompleteEvent;
 
         public BoardController(BoardContext context)
         {
@@ -93,6 +93,7 @@ namespace Game.Gameplay
             BoardInput.CellSelectedEvent.Subscribe(OnCellSelected).AddTo(disposables);
             context.NetworkGameController.SwitchPlayerEvent.Subscribe(OnNetworkActivePlayer).AddTo(disposables);
             context.NetworkGameController.UpdateCheckerPositionEvent.Subscribe(OnUpdateCheckerPosition).AddTo(disposables);
+            context.NetworkGameController.GameCompleteEvent.Subscribe(OnGameCompete).AddTo(disposables);
         }
 
         private void Unsubscribes()
@@ -172,8 +173,8 @@ namespace Game.Gameplay
                 }
                 else
                 {
+                    context.NetworkGameController.RPC_GameComplete(activePlayer);
                     Unsubscribes();
-                    playerWinEvent?.OnNext(activePlayer);
                 }
             }
         }
@@ -260,6 +261,11 @@ namespace Game.Gameplay
             }
 
             checker.SetPosition(data.Position);
+        }
+
+        private void OnGameCompete(PlayerType playerType)
+        {
+            gameCompleteEvent.OnNext(playerType);
         }
     }
 }

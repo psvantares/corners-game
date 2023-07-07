@@ -271,7 +271,8 @@ MonoBehaviour:
   _interpolationDataSource: 0
   startDelay: 1
   endDelay: 1
-  gameSessionLength: 180
+  gameSessionLength: 3600
+  _CurrentPlayer: 0
 --- !u!1 &1112788041
 GameObject:
   m_ObjectHideFlags: 0

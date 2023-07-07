@@ -53,7 +53,6 @@ namespace Game.Gameplay
         {
             disposable.Clear();
 
-            networkGameController.DisconnectEvent.Subscribe(OnDisconnect).AddTo(disposable);
             networkGameController.RemainingEvent.Subscribe(OnRemaining).AddTo(disposable);
             networkGameController.SwitchPlayerEvent.Subscribe(OnRemaining).AddTo(disposable);
 
@@ -71,11 +70,6 @@ namespace Game.Gameplay
             }
 
             networkRunner.Shutdown();
-        }
-
-        private void OnDisconnect(string text)
-        {
-            gameplayView.DisconnectText(text);
         }
 
         private void OnRemaining(string text)

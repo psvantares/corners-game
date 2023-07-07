@@ -12,6 +12,8 @@ namespace Game.Gameplay
         private const float SELECTED_SCALE_FACTOR = 1.14f;
 
         public PlayerType PlayerType => playerType;
+        public int Index { get; private set; }
+
 
         public Vector2Int Position
         {
@@ -28,6 +30,11 @@ namespace Game.Gameplay
         {
             normalScale = transform.localScale;
             selectedScale = normalScale * SELECTED_SCALE_FACTOR;
+        }
+
+        public void SetIndex(int index)
+        {
+            Index = index;
         }
 
         public void SetPosition(Vector2Int position)

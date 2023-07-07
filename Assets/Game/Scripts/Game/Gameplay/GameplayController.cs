@@ -40,6 +40,8 @@ namespace Game.Gameplay
         {
             disposables.Clear();
             disposables.Dispose();
+
+            Clear();
         }
 
         private void Initialize()

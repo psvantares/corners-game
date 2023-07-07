@@ -38,18 +38,27 @@ namespace Game.Gameplay
                 }
             }
 
+
+            var index = 0;
+
             foreach (var position in config.BlackPosition)
             {
                 var checker = pool.GetCheckerPrefab(PlayerType.Black);
+                checker.SetIndex(index);
                 checker.SetPosition(position);
                 blackCheckers.Add(checker);
+
+                index++;
             }
 
             foreach (var position in config.WhitePosition)
             {
                 var checker = pool.GetCheckerPrefab(PlayerType.White);
+                checker.SetIndex(index);
                 checker.SetPosition(position);
                 whiteCheckers.Add(checker);
+
+                index++;
             }
 
             checkers.AddRange(blackCheckers);
@@ -67,6 +76,11 @@ namespace Game.Gameplay
         public Checker GetChecker(Cell cell)
         {
             return checkers.FirstOrDefault(u => u.Position == cell.Position);
+        }
+
+        public Checker GetChecker(int index)
+        {
+            return checkers.FirstOrDefault(u => u.Index == index);
         }
 
         public bool IsPlayerOnOpponentPositions(PlayerType playerType)

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Game.Data;
+using Game.Utilities;
 using UniRx;
 using UnityEngine;
 
@@ -20,6 +22,7 @@ namespace Game.Gameplay
         private PlayerType activePlayer;
 
         private readonly CompositeDisposable disposables = new();
+        private CancellationTokenSource cts;
         private readonly ISubject<PlayerType> playerWinEvent = new Subject<PlayerType>();
 
         public IObservable<PlayerType> PlayerWinEvent => playerWinEvent;
@@ -49,6 +52,7 @@ namespace Game.Gameplay
             Unsubscribes();
 
             board.Dispose();
+            cts.CancelAndDisposeSafe();
 
             cellsHighlight.Clear();
             availableToMoveCells.Clear();
@@ -87,7 +91,8 @@ namespace Game.Gameplay
         private void Subscribes()
         {
             BoardInput.CellSelectedEvent.Subscribe(OnCellSelected).AddTo(disposables);
-            context.NetworkGameController.SwitchPlayerEvent.Subscribe(SetNetworkActivePlayer).AddTo(disposables);
+            context.NetworkGameController.SwitchPlayerEvent.Subscribe(OnNetworkActivePlayer).AddTo(disposables);
+            context.NetworkGameController.UpdateCheckerPositionEvent.Subscribe(OnUpdateCheckerPosition).AddTo(disposables);
         }
 
         private void Unsubscribes()
@@ -125,9 +130,12 @@ namespace Game.Gameplay
 
             var checker = board.GetChecker(cell);
 
-            if (selfPlayer != activePlayer)
+            if (context.GameModel.GameplayMode == GameplayMode.Network)
             {
-                return;
+                if (selfPlayer != activePlayer)
+                {
+                    return;
+                }
             }
 
             if (checker != null)
@@ -157,7 +165,9 @@ namespace Game.Gameplay
 
                     if (IsAiTurn())
                     {
-                        MakeAiMove().Forget();
+                        cts.CancelAndDisposeSafe();
+                        cts = new CancellationTokenSource();
+                        MakeAiMove(cts.Token).Forget();
                     }
                 }
                 else
@@ -168,16 +178,30 @@ namespace Game.Gameplay
             }
         }
 
-        private async UniTask MakeAiMove()
+        private async UniTask MakeAiMove(CancellationToken token)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
             MakeMove(bot.CalcTurn());
             SwitchPlayer();
         }
 
-        private static void MakeMove(Cell cell)
+        private void MakeMove(Cell cell)
         {
-            Checker.Selected.SetPosition(cell.Position);
+            if (context.GameModel.GameplayMode == GameplayMode.Network)
+            {
+                var data = new NetworkCheckerData
+                {
+                    Index = Checker.Selected.Index,
+                    Position = cell.Position
+                };
+
+                context.NetworkGameController.RPC_UpdateCheckerPosition(data);
+            }
+            else
+            {
+                Checker.Selected.SetPosition(cell.Position);
+            }
+
             Checker.Selected.SetSelected(false);
         }
 
@@ -194,11 +218,6 @@ namespace Game.Gameplay
         private PlayerType NextPlayer()
         {
             return activePlayer == PlayerType.White ? PlayerType.Black : PlayerType.White;
-        }
-
-        private void SetNetworkActivePlayer(PlayerType playerType)
-        {
-            activePlayer = playerType;
         }
 
         private void SetLocalActivePlayer(PlayerType playerType)
@@ -224,6 +243,23 @@ namespace Game.Gameplay
             }
 
             ProcessLogic(cell);
+        }
+
+        private void OnNetworkActivePlayer(PlayerType playerType)
+        {
+            activePlayer = playerType;
+        }
+
+        private void OnUpdateCheckerPosition(NetworkCheckerData data)
+        {
+            var checker = board.GetChecker(data.Index);
+
+            if (checker == null)
+            {
+                return;
+            }
+
+            checker.SetPosition(data.Position);
         }
     }
 }

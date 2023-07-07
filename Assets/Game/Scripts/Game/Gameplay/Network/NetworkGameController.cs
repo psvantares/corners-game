@@ -40,6 +40,7 @@ namespace Game.Gameplay
         private NetworkLinkedList<NetworkBehaviourId> PlayerDataNetworkedIds => default;
 
         private readonly ISubject<PlayerType> switchPlayerEvent = new Subject<PlayerType>();
+        private readonly ISubject<NetworkCheckerData> updateCheckerPositionEvent = new Subject<NetworkCheckerData>();
         private readonly ISubject<string> remainingEvent = new Subject<string>();
         private readonly ISubject<string> disconnectEvent = new Subject<string>();
 
@@ -47,6 +48,7 @@ namespace Game.Gameplay
         public int PlayerCount => PlayerDataNetworkedIds.Count;
 
         public IObservable<PlayerType> SwitchPlayerEvent => switchPlayerEvent;
+        public IObservable<NetworkCheckerData> UpdateCheckerPositionEvent => updateCheckerPositionEvent;
         public IObservable<string> RemainingEvent => remainingEvent;
         public IObservable<string> DisconnectEvent => disconnectEvent;
 
@@ -169,6 +171,12 @@ namespace Game.Gameplay
         {
             CurrentPlayer = playerType;
             switchPlayerEvent.OnNext(playerType);
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        public void RPC_UpdateCheckerPosition(NetworkCheckerData data)
+        {
+            updateCheckerPositionEvent.OnNext(data);
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

@@ -18,9 +18,9 @@ namespace Game.Gameplay
             networkGameController = FindObjectOfType<NetworkGameController>();
             gameplayEntry = FindObjectOfType<GameplayEntry>();
             gameplayView = FindObjectOfType<GameplayView>();
-           
+
             gameplayView.PlayerText(networkGameController.CurrentPlayer.ToString());
-            gameplayEntry.Initialize( networkGameController.PlayerCount);
+            gameplayEntry.Initialize(networkGameController.PlayerCount);
         }
 
         public override void FixedUpdateNetwork()

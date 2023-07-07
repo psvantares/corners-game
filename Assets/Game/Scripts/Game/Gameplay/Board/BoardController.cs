@@ -17,6 +17,8 @@ namespace Game.Gameplay
 
         private List<Cell> availableToMoveCells;
         private List<CellHighlight> cellsHighlight;
+        
+        private PlayerType selfPlayer;
         private PlayerType activePlayer;
 
         private readonly CompositeDisposable disposables = new();
@@ -31,7 +33,7 @@ namespace Game.Gameplay
             InitializeHighlight(context);
 
             networkGameController = Object.FindObjectOfType<NetworkGameController>();
-            activePlayer = networkGameController.CurrentPlayerType;
+            activePlayer = networkGameController.CurrentPlayer;
 
             Subscribes();
         }

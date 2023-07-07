@@ -88,6 +88,7 @@ namespace Game.Menu
                 GameMode = mode,
                 SessionName = roomName,
                 Scene = 2,
+                PlayerCount = 2,
                 SceneManager = runnerInstance.gameObject.AddComponent<NetworkSceneManagerDefault>()
             };
 

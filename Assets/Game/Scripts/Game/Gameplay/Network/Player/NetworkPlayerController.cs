@@ -19,7 +19,7 @@ namespace Game.Gameplay
             gameplayEntry = FindObjectOfType<GameplayEntry>();
             gameplayView = FindObjectOfType<GameplayView>();
 
-            gameplayView.PlayerText(networkGameController.CurrentPlayerType.ToString());
+            gameplayView.PlayerText(networkGameController.CurrentPlayer.ToString());
             gameplayEntry.Initialize();
         }
 
@@ -28,10 +28,6 @@ namespace Game.Gameplay
             if (Object.HasStateAuthority == false)
             {
                 return;
-            }
-
-            if (networkGameController.GameIsRunning)
-            {
             }
         }
     }

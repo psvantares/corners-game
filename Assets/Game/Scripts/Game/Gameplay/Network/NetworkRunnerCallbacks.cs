@@ -16,6 +16,7 @@ namespace Game.Gameplay
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
+            GetComponent<NetworkRunner>().Shutdown();
         }
 
         public void OnInput(NetworkRunner runner, NetworkInput input)

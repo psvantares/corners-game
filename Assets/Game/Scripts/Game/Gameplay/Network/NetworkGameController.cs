@@ -28,7 +28,7 @@ namespace Game.Gameplay
         private TickTimer Timer { get; set; }
 
         [Networked]
-        public PlayerType CurrentPlayerType { get; private set; }
+        public PlayerType CurrentPlayer { get; private set; }
 
         [Networked]
         private GameState CurrentGameState { get; set; }
@@ -166,7 +166,7 @@ namespace Game.Gameplay
         [Rpc(RpcSources.All, RpcTargets.All)]
         public void RPC_SwitchActivePlayer(PlayerType playerType)
         {
-            CurrentPlayerType = playerType;
+            CurrentPlayer = playerType;
             switchPlayerEvent.OnNext(playerType);
         }
 

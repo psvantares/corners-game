@@ -97,14 +97,20 @@ namespace Game.Menu
             deckEvent?.OnNext(deckType);
         }
 
-        private void OnGameplayMode(GameplayMode gameplayMode)
-        {
-            gameplayModeEvent?.OnNext(gameplayMode);
-        }
-
         private void OnBoardMode(BoardMode boardMode)
         {
             boarModeEvent?.OnNext(boardMode);
+        }
+
+        private void OnGameplayMode(GameplayMode gameplayMode)
+        {
+            boardNormalToggle.SetInteractable(gameplayMode != GameplayMode.Network);
+            boardDiagonalToggle.SetInteractable(gameplayMode != GameplayMode.Network);
+            boardVerticalHorizontalToggle.SetInteractable(gameplayMode != GameplayMode.Network);
+            diagonalToggle.SetInteractable(gameplayMode != GameplayMode.Network);
+            squareToggle.SetInteractable(gameplayMode != GameplayMode.Network);
+
+            gameplayModeEvent?.OnNext(gameplayMode);
         }
 
         private void OnJoinGame(Unit unit)

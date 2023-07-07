@@ -19,6 +19,7 @@ namespace Game.Core
         protected TMP_Text MainText;
 
         private bool isOn;
+        private float duration = 0.1f;
         private Sequence sequence;
         private readonly ISubject<bool> clickedEvent = new Subject<bool>();
 
@@ -57,6 +58,7 @@ namespace Game.Core
 
         public void ForceClick(bool isOn)
         {
+            duration = 0;
             MainToggle.isOn = isOn;
         }
 
@@ -79,9 +81,13 @@ namespace Game.Core
             {
                 sequence?.Kill();
                 sequence = DOTween.Sequence();
-                sequence.Append(AnimationTransform.DOScale(0.8f, 0.1f).SetEase(Ease.OutBack));
-                sequence.Append(AnimationTransform.DOScale(1, 0.1f).SetEase(Ease.OutBack));
-                sequence.OnComplete(() => clickedEvent.OnNext(isOn));
+                sequence.Append(AnimationTransform.DOScale(0.8f, duration).SetEase(Ease.OutBack));
+                sequence.Append(AnimationTransform.DOScale(1, duration).SetEase(Ease.OutBack));
+                sequence.OnComplete(() =>
+                {
+                    duration = 0.1f;
+                    clickedEvent.OnNext(isOn);
+                });
             }
         }
     }

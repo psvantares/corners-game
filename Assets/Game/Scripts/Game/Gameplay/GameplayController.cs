@@ -47,7 +47,18 @@ namespace Game.Gameplay
         private void Initialize()
         {
             var gameModel = ServiceLocator.Instance.GetService<GameService>().GameModel;
-            var config = gameModel.DeckType == BoardDeckType.Diagonal ? assets.BoardConfigDiagonal : assets.BoardConfigSquare;
+            BoardConfig config;
+
+            if (gameModel.GameplayMode == GameplayMode.Network)
+            {
+                gameModel.BoardMode = BoardMode.Normal;
+                config = assets.BoardConfigSquare;
+            }
+            else
+            {
+                config = gameModel.DeckType == BoardDeckType.Diagonal ? assets.BoardConfigDiagonal : assets.BoardConfigSquare;
+            }
+
             var networkGameController = Object.FindObjectOfType<NetworkGameController>();
             var boardContext = new BoardContext(gameModel, networkGameController, config, pool);
 

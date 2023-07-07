@@ -19,7 +19,7 @@ namespace Game.Gameplay
         private List<CellHighlight> cellsHighlight;
         private PlayerType activePlayer;
 
-        private readonly CompositeDisposable disposable = new();
+        private readonly CompositeDisposable disposables = new();
         private readonly ISubject<PlayerType> playerWinEvent = new Subject<PlayerType>();
 
         public IObservable<PlayerType> PlayerWinEvent => playerWinEvent;
@@ -31,8 +31,8 @@ namespace Game.Gameplay
             InitializeHighlight(context);
 
             networkGameController = Object.FindObjectOfType<NetworkGameController>();
+            activePlayer = networkGameController.CurrentPlayerType;
 
-            SetActivePlayer(networkGameController.CurrentPlayerType);
             Subscribes();
         }
 
@@ -78,12 +78,13 @@ namespace Game.Gameplay
 
         private void Subscribes()
         {
-            BoardInput.CellSelectedEvent.Subscribe(OnCellSelected).AddTo(disposable);
+            BoardInput.CellSelectedEvent.Subscribe(OnCellSelected).AddTo(disposables);
+            networkGameController.SwitchPlayerEvent.Subscribe(SetNetworkActivePlayer).AddTo(disposables);
         }
 
         private void Unsubscribes()
         {
-            disposable.Clear();
+            disposables.Clear();
         }
 
         private void ShowHighlight(IReadOnlyList<Cell> cells)
@@ -174,7 +175,7 @@ namespace Game.Gameplay
 
         private void SwitchPlayer()
         {
-            SetActivePlayer(NextPlayer());
+            SetLocalActivePlayer(NextPlayer());
         }
 
         private PlayerType NextPlayer()
@@ -182,7 +183,12 @@ namespace Game.Gameplay
             return activePlayer == PlayerType.White ? PlayerType.Black : PlayerType.White;
         }
 
-        private void SetActivePlayer(PlayerType playerType)
+        private void SetNetworkActivePlayer(PlayerType playerType)
+        {
+            activePlayer = playerType;
+        }
+
+        private void SetLocalActivePlayer(PlayerType playerType)
         {
             activePlayer = playerType;
             networkGameController.RPC_SwitchActivePlayer(activePlayer);

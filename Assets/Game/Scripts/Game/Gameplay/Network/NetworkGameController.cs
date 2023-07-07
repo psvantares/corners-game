@@ -1,6 +1,7 @@
 ﻿using System;
 using Fusion;
 using Game.Data;
+using UniRx;
 using UnityEngine;
 
 namespace Game.Gameplay
@@ -27,7 +28,7 @@ namespace Game.Gameplay
         private TickTimer Timer { get; set; }
 
         [Networked]
-        public PlayerType CurrentPlayerType { get; set; }
+        public PlayerType CurrentPlayerType { get; private set; }
 
         [Networked]
         private GameState CurrentGameState { get; set; }
@@ -38,9 +39,15 @@ namespace Game.Gameplay
         [Networked, Capacity(2)]
         private NetworkLinkedList<NetworkBehaviourId> PlayerDataNetworkedIds => default;
 
-        private GameplayView gameplayView;
+        private readonly ISubject<PlayerType> switchPlayerEvent = new Subject<PlayerType>();
+        private readonly ISubject<string> remainingEvent = new Subject<string>();
+        private readonly ISubject<string> disconnectEvent = new Subject<string>();
 
         public bool GameIsRunning => CurrentGameState == GameState.Running;
+
+        public IObservable<PlayerType> SwitchPlayerEvent => switchPlayerEvent;
+        public IObservable<string> RemainingEvent => remainingEvent;
+        public IObservable<string> DisconnectEvent => disconnectEvent;
 
         public override void Spawned()
         {
@@ -116,12 +123,7 @@ namespace Game.Gameplay
             var time = TimeSpan.FromSeconds(tick);
             var timeText = time.ToString(@"hh\:mm\:ss");
 
-            if (!gameplayView)
-            {
-                gameplayView = FindObjectOfType<GameplayView>();
-            }
-
-            gameplayView.RemainingText(timeText);
+            remainingEvent.OnNext(timeText);
         }
 
         private void UpdateEndingDisplay()
@@ -137,12 +139,7 @@ namespace Game.Gameplay
             var timeText = time.ToString(@"hh\:mm\:ss");
             var text = $"{playerData.NickName}: disconnecting in {timeText}";
 
-            if (!gameplayView)
-            {
-                gameplayView = FindObjectOfType<GameplayView>();
-            }
-
-            gameplayView.DisconnectText(text);
+            disconnectEvent.OnNext(text);
 
             if (Timer.ExpiredOrNotRunning(Runner) == false)
             {
@@ -166,17 +163,11 @@ namespace Game.Gameplay
             PlayerDataNetworkedIds.Add(playerDataNetworkedId);
         }
 
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        [Rpc(RpcSources.All, RpcTargets.All)]
         public void RPC_SwitchActivePlayer(PlayerType playerType)
         {
             CurrentPlayerType = playerType;
-
-            if (!gameplayView)
-            {
-                gameplayView = FindObjectOfType<GameplayView>();
-            }
-
-            gameplayView.RunText(playerType.ToString());
+            switchPlayerEvent.OnNext(playerType);
         }
 
         [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

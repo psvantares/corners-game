@@ -49,7 +49,7 @@ namespace Game.Gameplay
             disconnectText.text = text;
         }
 
-        public void RunText(string text)
+        public void PlayerText(string text)
         {
             runText.text = text.ToUpper();
         }

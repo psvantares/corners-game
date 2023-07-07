@@ -19,7 +19,7 @@ namespace Game.Gameplay
             gameplayEntry = FindObjectOfType<GameplayEntry>();
             gameplayView = FindObjectOfType<GameplayView>();
 
-            gameplayView.RunText(networkGameController.CurrentPlayerType.ToString());
+            gameplayView.PlayerText(networkGameController.CurrentPlayerType.ToString());
             gameplayEntry.Initialize();
         }
 

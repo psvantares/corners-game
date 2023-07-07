@@ -31,6 +31,8 @@ namespace Game.Gameplay
 
         public void Initialize()
         {
+            viewManager.Initialize();
+
             var gameplayController = new GameplayController
             (
                 viewManager,

@@ -28,9 +28,11 @@ namespace Game.Menu
 
         private readonly CompositeDisposable disposable = new();
         private readonly ISubject<Unit> startGameEvent = new Subject<Unit>();
+        private readonly ISubject<Unit> joinGameEvent = new Subject<Unit>();
         private readonly ISubject<Unit> homeEvent = new Subject<Unit>();
 
         public IObservable<Unit> StartGameEvent => startGameEvent;
+        public IObservable<Unit> JoinGameEvent => joinGameEvent;
         public IObservable<Unit> HomeEvent => homeEvent;
 
         public PlayView PlayView => playView;
@@ -76,6 +78,7 @@ namespace Game.Menu
 
         private void OnJoinGame(Unit unit)
         {
+            joinGameEvent.OnNext(unit);
         }
 
         private void OnStartGame(Unit unit)

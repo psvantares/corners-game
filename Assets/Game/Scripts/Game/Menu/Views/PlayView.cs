@@ -115,6 +115,7 @@ namespace Game.Menu
 
         private void OnJoinGame(Unit unit)
         {
+            OnGameplayMode(GameplayMode.Network);
             joinGameEvent?.OnNext(unit);
         }
 

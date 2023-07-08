@@ -50,6 +50,7 @@ namespace Game.Menu
         {
             menuViewManager.Initialize(gameModel);
             menuViewManager.StartGameEvent.Subscribe(OnStartGame).AddTo(disposables);
+            menuViewManager.JoinGameEvent.Subscribe(OnJoinGame).AddTo(disposables);
             menuViewManager.HomeEvent.Subscribe(OnHome).AddTo(disposables);
         }
 
@@ -105,6 +106,12 @@ namespace Game.Menu
         {
             StartPlayerData();
             StartGame(gameModel.GameplayMode == GameplayMode.Network ? GameMode.Shared : GameMode.Single, roomName, "Gameplay");
+        }
+
+        private void OnJoinGame(Unit unit)
+        {
+            StartPlayerData();
+            StartGame(GameMode.Shared, roomName, "Gameplay");
         }
 
         private void OnHome(Unit unit)
